@@ -1,11 +1,17 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import Button from '../../components/common/Button';
-import Input from '../../components/common/Input';
-import logo from '../../assets/images/Frame 1686553571.svg'
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import Button from "../../components/common/Button";
+import Input from "../../components/common/Input";
+import logo from "../../assets/images/ForgotPassword.svg";
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const handleSendOTP = () => {
+    navigate('/verify-otp');
+  };
 
   return (
     <div className="h-screen bg-[#1E233A] flex items-center justify-center px-4 sm:px-6 md:px-10 lg:px-[80px]">
@@ -24,10 +30,13 @@ const ForgotPassword = () => {
         </div>
 
         {/* Right Side */}
-        <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-10 text-white flex flex-col justify-center">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-2">Forgot Password</h2>
+        <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-[8.5rem] text-white flex flex-col justify-center">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-2">
+            Forgot Password
+          </h2>
           <p className="text-sm text-gray-400 mb-6 sm:mb-8">
-            Enter your registered email address and phone number. We'll send you a code to reset your password.
+            Enter your registered email address and phone number. We'll send you
+            a code to reset your password.
           </p>
 
           <div className="mb-5">
@@ -41,54 +50,14 @@ const ForgotPassword = () => {
               id="email"
               type="email"
               placeholder="Enter Email"
-              className="w-full p-3 rounded-lg bg-[#1E233A] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="w-full -mt-1 p-3 rounded-lg bg-[#1E233A] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-600"
             />
           </div>
 
-          {/* <div className="mb-2 relative">
-            <label
-              htmlFor="password"
-              className="text-sm font-medium block mb-2 text-gray-300"
-            >
-              {t("login.password")}
-            </label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Enter Password"
-              className="w-full p-3 rounded-lg bg-[#1E233A] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-600 pr-10"
-            />
-            <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer">
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                />
-              </svg>
-            </span>
-          </div> */}
-
-          {/* <a
-            href="/forgot-password"
-            className="text-sm text-purple-400 text-right mb-6 block"
+          <Button 
+            onClick={handleSendOTP}
+            className="w-full bg-[#8345E9] hover:bg-[#6E30EE] text-white font-bold py-3 rounded-xl text-lg transition duration-300"
           >
-            {t("login.forgot")}
-          </a> */}
-
-          <Button className="w-full bg-[#8345E9] hover:bg-[#6E30EE] text-white font-bold py-3 rounded-xl text-lg transition duration-300">
             {t("Send OTP")}
           </Button>
         </div>

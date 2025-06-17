@@ -8,7 +8,7 @@ const Input = ({ label, type = 'text', value, onChange, className, ...props }) =
         type={type}
         value={value}
         onChange={onChange}
-        className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm ${className}`}
+        className={`mt-1 block w-full px-3 pt-2 border border-[#FFFFFF33] rounded-md shadow-sm h-[56px] ${className}`}
         {...props}
       />
     </div>
