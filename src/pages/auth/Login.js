@@ -62,7 +62,7 @@ const Login = () => {
   return (
     <div className="h-screen bg-[#1E233A] flex items-center justify-center px-4 sm:px-6 md:px-10 lg:px-[80px]">
       <div className="flex flex-col lg:flex-row w-full max-w-[1279px] h-[90vh] lg:h-[80vh] p-6 sm:p-8 lg:p-[40px] bg-[#262D4A] rounded-[30px] overflow-hidden shadow-xl relative">
-        <div className="absolute top-6 right-6 flex space-x-4">
+        <div className="absolute top-10 right-10 flex space-x-4">
           <LanguageToggle isEnglish={isEnglish} toggleLanguage={toggleLanguage} />
           <ThemeToggle isLight={isLight} toggleTheme={toggleTheme} />
         </div>

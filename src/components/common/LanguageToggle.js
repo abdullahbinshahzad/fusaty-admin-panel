@@ -5,13 +5,29 @@ const LanguageToggle = ({ isEnglish, toggleLanguage }) => {
   return (
     <div
       onClick={toggleLanguage}
-      className={`relative w-20 h-8 flex items-center rounded-full p-1 cursor-pointer transition-all duration-300 ${isEnglish ? 'bg-purple-700' : 'bg-gray-400'}`}
+      className={`relative w-[48px] h-[24px] flex items-center rounded-full p-[2px] cursor-pointer transition-all duration-300 bg-[#EEF3F9] border border-[#AD84F0]`}
     >
+      {/* Toggle Circle */}
       <div
-        className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ${isEnglish ? 'translate-x-0' : 'translate-x-12'}`}
+        className={`absolute w-[27px] h-[24px] rounded-full  shadow-md transition-transform duration-300 bg-[#4D1D76] ${
+          isEnglish
+            ? 'translate-x-[-3px] border border-[#AD84F0]'
+            : 'translate-x-[18px] border border-[#AD84F0]'
+        }`}
       ></div>
-      <span className={`absolute text-white font-bold ${isEnglish ? 'left-3' : 'right-3'}`}>
-        {isEnglish ? 'E' : 'ع'}
+
+      {/* Label E */}
+      <span
+        className={`absolute font-bold text-[12px] transition-all duration-300 top-1/2 -translate-y-1/2 left-[9px] ${isEnglish ? 'text-white' : 'text-[#4D1D76]'}`}
+      >
+        E
+      </span>
+
+      {/* Label ع */}
+      <span
+        className={`absolute font-bold text-[12px] transition-all duration-300 top-1/2 -translate-y-1/2 left-[29.5px] -mt-[3.25px] ${isEnglish ? 'text-[#4D1D76]' : 'text-white'}`}
+      >
+        ع
       </span>
     </div>
   );
