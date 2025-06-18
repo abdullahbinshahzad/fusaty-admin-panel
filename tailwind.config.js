@@ -4,7 +4,26 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        background: {
+          main: 'var(--background-main)',
+          card: 'var(--background-card)',
+        },
+        text: {
+          main: 'var(--text-main)',
+          primary: 'var(--text-primary)',
+          secondary: 'var(--text-secondary)',
+        },
+        accent: 'var(--accent)',
+        input: {
+          bg: 'var(--input-bg)',
+          text: 'var(--input-text)',
+          placeholder: 'var(--input-placeholder)',
+        },
+        border: 'var(--border)',
+      },
+    },
   },
   plugins: [],
 }

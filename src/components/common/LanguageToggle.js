@@ -1,6 +1,16 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLanguage } from '../../store/slices/languageSlice';
 
-const LanguageToggle = ({ isEnglish, toggleLanguage }) => {
+const LanguageToggle = () => {
+  const dispatch = useDispatch();
+  const currentLanguage = useSelector((state) => state.language.language);
+  const isEnglish = currentLanguage === 'en';
+
+  const toggleLanguage = () => {
+    const newLang = isEnglish ? 'ar' : 'en';
+    dispatch(setLanguage(newLang));
+  };
 
   return (
     <div
