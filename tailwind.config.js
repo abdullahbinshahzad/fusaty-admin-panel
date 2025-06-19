@@ -20,6 +20,7 @@ module.exports = {
           bg: 'var(--input-bg)',
           text: 'var(--input-text)',
           placeholder: 'var(--input-placeholder)',
+          readonlybg: 'var(--input-readonlybg)',
         },
         border: 'var(--border)',
       },

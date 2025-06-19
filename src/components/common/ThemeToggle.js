@@ -1,11 +1,21 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleThemeMode } from "../../store/slices/themeSlice";
 import DarkModeIcon from "../../assets/images/Dark Mode.svg";
 import LightModeIcon from "../../assets/images/Light Mode.svg";
 
-const ThemeToggle = ({ isLight, toggleTheme }) => {
+const ThemeToggle = () => {
+  const dispatch = useDispatch();
+  const mode = useSelector((state) => state.theme.mode);
+  const isLight = mode === "light";
+
+  const handleToggle = () => {
+    dispatch(toggleThemeMode());
+  };
+
   return (
     <div
-      onClick={toggleTheme}
+      onClick={handleToggle}
       className={`relative w-[48px] h-[24px] flex items-center rounded-full p-[2px] cursor-pointer transition-all duration-300 border-x-[2.25px] border ${
         isLight
           ? "bg-[#A7E9FF] border-[#00A8FF] shadow-[-2.13px_1.42px_2.84px_1.07px_#00000059_inset]"

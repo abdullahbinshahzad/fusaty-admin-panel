@@ -11,6 +11,7 @@ export const theme = {
     '--input-bg': '#EEF3F9',
     '--input-text': '#1E233A',
     '--input-placeholder': '#00000040',
+    '--input-readonlybg': '#AD84F0',
     '--border': '#D1D4DB',
   },
   dark: {
@@ -23,6 +24,7 @@ export const theme = {
     '--input-bg': '#262D4A',
     '--input-text': '#FFFFFF',
     '--input-placeholder': '#FFFFFF66',
+    '--input-readonlybg': '#AD84F0',
     '--border': '#FFFFFF33',
   },
 };

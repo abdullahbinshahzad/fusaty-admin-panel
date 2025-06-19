@@ -6,6 +6,7 @@ import logo from "../../assets/images/verifyOTP.svg";
 import LanguageToggle from "../../components/common/LanguageToggle";
 import ThemeToggle from "../../components/common/ThemeToggle";
 import { applyTheme } from '../../utils/theme';
+import { useSelector } from 'react-redux';
 
 const VerifyOTP = () => {
   const { t } = useTranslation();
@@ -13,16 +14,11 @@ const VerifyOTP = () => {
   const [otp, setOtp] = useState(["", "", "", "", ""]);
   const [timeLeft, setTimeLeft] = useState(60); // 60 seconds
   const inputRefs = useRef([]);
-  const [isLight, setIsLight] = useState(true);
+  const mode = useSelector((state) => state.theme.mode);
 
   useEffect(() => {
-    applyTheme(isLight ? 'light' : 'dark');
-  }, [isLight]);
-
-  const toggleTheme = () => {
-    setIsLight(!isLight);
-    // Implement theme change logic here (e.g., add/remove classes to body or root element)
-  };
+    applyTheme(mode);
+  }, [mode]);
 
   useEffect(() => {
     // Start timer when component mounts
@@ -73,14 +69,14 @@ const VerifyOTP = () => {
   };
 
   return (
-    <div className="h-screen bg-[#1E233A] flex items-center justify-center px-4 sm:px-6 md:px-10 lg:px-[80px]">
-      <div className="flex flex-col lg:flex-row w-full max-w-[1279px] h-[90vh] lg:h-[80vh] p-6 sm:p-8 lg:p-[40px] bg-[#262D4A] rounded-[30px] overflow-hidden shadow-xl relative">
+    <div className="h-screen bg-background-main flex items-center justify-center px-4 sm:px-6 md:px-10 lg:px-[80px]">
+      <div className="flex flex-col lg:flex-row w-full max-w-[1279px] h-[90vh] lg:h-[80vh] p-6 sm:p-8 lg:p-[40px] bg-background-card rounded-[30px] overflow-hidden shadow-xl relative">
         <div className="absolute top-10 right-10 flex space-x-4">
           <LanguageToggle />
-          <ThemeToggle isLight={isLight} toggleTheme={toggleTheme} />
+          <ThemeToggle />
         </div>
         {/* Left Side */}
-        <div className="w-full lg:w-1/2 bg-[#8345E9] text-white flex flex-col items-center justify-center p-6 sm:p-8 lg:p-10 rounded-[15px] mb-6 lg:mb-0 lg:mr-4 relative">
+        <div className="w-full lg:w-1/2 bg-accent text-text-main flex flex-col items-center justify-center p-6 sm:p-8 lg:p-10 rounded-[15px] mb-6 lg:mb-0 lg:mr-4 relative">
           <div className="h-24 sm:h-32 md:h-36 lg:h-40 flex items-center justify-center">
             <img
               src={logo}
@@ -88,14 +84,14 @@ const VerifyOTP = () => {
               className="h-full object-contain"
             />
           </div>
-          <div className="absolute hidden lg:block bottom-68 left-14 w-[1px] h-[151px] bg-white rounded-full" />
-          <div className="absolute hidden lg:block bottom-2 left-14 w-[70px] h-[1px] bg-white rounded-full" />
+          <div className="absolute hidden lg:block bottom-68 left-14 w-[1px] h-[151px] bg-text-main rounded-full" />
+          <div className="absolute hidden lg:block bottom-2 left-14 w-[70px] h-[1px] bg-text-main rounded-full" />
         </div>
 
         {/* Right Side */}
-        <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-[8.5rem] text-white flex flex-col justify-center">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-2">{t("verifyOTP.title")}</h2>
-          <p className="text-sm text-gray-400 mb-6 sm:mb-8">
+        <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-[8.5rem] text-text-main flex flex-col justify-center">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-2 text-text-primary">{t("verifyOTP.title")}</h2>
+          <p className="text-sm text-text-secondary mb-6 sm:mb-8">
             {t("verifyOTP.description")}
           </p>
 
@@ -104,11 +100,11 @@ const VerifyOTP = () => {
               type="email"
               value="123@gmail.com"
               readOnly
-              className="w-full p-3 rounded-lg bg-purple-500/50 text-white placeholder-gray-300 focus:outline-none"
+              className="w-full p-3 rounded-lg bg-input-readonlybg text-text-main focus:outline-none"
             />
           </div>
 
-          <label className="text-sm font-medium block mb-2 text-gray-300">
+          <label className="text-sm font-medium block mb-2 text-text-primary">
             {t("verifyOTP.otp")}
           </label>
           <div className="flex flex-col items-center mb-6">
@@ -123,24 +119,24 @@ const VerifyOTP = () => {
                     onChange={(e) => handleChange(i, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(i, e)}
                     placeholder="-"
-                    className="w-14 h-14 pb-2 text-center rounded-lg bg-[#1E233A] text-white border-2 border-[#FFFFFF33] focus:outline-none focus:ring-2 focus:ring-purple-600 text-xl font-semibold placeholder:text-center placeholder:text-[#FFFFFF33]"
+                    className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 pb-2 text-center rounded-lg bg-background-main text-text-primary border-2 border-border focus:outline-none focus:ring-2 focus:ring-accent text-xl font-semibold placeholder:text-center placeholder:text-border"
                   />
                 </React.Fragment>
               ))}
             </div>
-            <div className="text-sm w-full px-2 py-1 text-end text-gray-400">
-              {t("verifyOTP.timeLeft")}: {formatTime(timeLeft)}
+            <div className="text-sm w-full px-2 py-1 text-end text-text-primary">
+              {formatTime(timeLeft)}
             </div>
           </div>
 
           <Button
             onClick={handleVerify}
-            className="w-full bg-[#8345E9] hover:bg-[#6E30EE] text-white font-bold py-3 rounded-xl text-lg transition duration-300"
+            className="w-full bg-accent hover:bg-accent text-text-main font-bold py-3 rounded-xl text-lg transition duration-300"
           >
             {t("verifyOTP.verify")}
           </Button>
 
-          <p className="text-sm text-white mt-4">
+          <p className="text-sm text-text-primary mt-4">
             Didn't Receive the OTP?{" "}
             <span className="text-[#8345E94D] font-semibold cursor-pointer">
               RESEND IT

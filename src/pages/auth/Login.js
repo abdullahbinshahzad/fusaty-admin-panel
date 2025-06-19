@@ -12,20 +12,17 @@ import {
 import LanguageToggle from "../../components/common/LanguageToggle";
 import ThemeToggle from "../../components/common/ThemeToggle";
 import { applyTheme } from '../../utils/theme';
+import { useSelector } from 'react-redux';
 
 const Login = () => {
   const { t } = useTranslation();
   const [eye, seteye] = useState(true);
   const [loader, setLoader] = useState(false);
-  const [isLight, setIsLight] = useState(true);
+  const mode = useSelector((state) => state.theme.mode);
 
   useEffect(() => {
-    applyTheme(isLight ? 'light' : 'dark');
-  }, [isLight]);
-
-  const toggleTheme = () => {
-    setIsLight(!isLight);
-  };
+    applyTheme(mode);
+  }, [mode]);
 
   const onEyeClick = () => {
     seteye(!eye);
@@ -56,7 +53,7 @@ const Login = () => {
       <div className="flex flex-col lg:flex-row w-full max-w-[1279px] h-[90vh] lg:h-[80vh] p-6 sm:p-8 lg:p-[40px] bg-background-card rounded-[30px] overflow-hidden shadow-xl relative">
         <div className="absolute top-10 right-10 flex space-x-4">
           <LanguageToggle />
-          <ThemeToggle isLight={isLight} toggleTheme={toggleTheme} />
+          <ThemeToggle />
         </div>
         {/* Left Side */}
         <div className="w-full lg:w-1/2 bg-accent text-text-main flex flex-col items-center justify-center p-6 sm:p-8 lg:p-10 rounded-[15px] mb-6 lg:mb-0 lg:mr-4 relative">
