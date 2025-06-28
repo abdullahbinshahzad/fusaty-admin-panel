@@ -7,6 +7,7 @@ import LanguageToggle from "../../components/common/LanguageToggle";
 import ThemeToggle from "../../components/common/ThemeToggle";
 import { applyTheme } from '../../utils/theme';
 import { useSelector } from 'react-redux';
+import { useLanguageStyles } from '../../hooks/useLanguageStyles';
 
 const VerifyOTP = () => {
   const { t } = useTranslation();
@@ -15,6 +16,7 @@ const VerifyOTP = () => {
   const [timeLeft, setTimeLeft] = useState(60); // 60 seconds
   const inputRefs = useRef([]);
   const mode = useSelector((state) => state.theme.mode);
+  const { textAlign, oppositeTextAlign, textDirection } = useLanguageStyles();
 
   useEffect(() => {
     applyTheme(mode);
@@ -89,9 +91,9 @@ const VerifyOTP = () => {
         </div>
 
         {/* Right Side */}
-        <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-[8.5rem] text-text-main flex flex-col justify-center">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-2 text-text-primary">{t("verifyOTP.title")}</h2>
-          <p className="text-sm text-text-secondary mb-6 sm:mb-8">
+        <div className={`w-full lg:w-1/2 p-6 sm:p-8 lg:p-[8.5rem] text-text-main flex flex-col justify-center ${textDirection}`}>
+          <h2 className={`text-2xl sm:text-3xl font-bold mb-2 text-text-primary ${textAlign}`}>{t("verifyOTP.title")}</h2>
+          <p className={`text-sm text-text-secondary mb-6 sm:mb-8 ${textAlign}`}>
             {t("verifyOTP.description")}
           </p>
 
@@ -100,11 +102,11 @@ const VerifyOTP = () => {
               type="email"
               value="123@gmail.com"
               readOnly
-              className="w-full p-3 rounded-lg bg-input-readonlybg text-text-main focus:outline-none"
+              className={`w-full p-3 rounded-lg bg-input-readonlybg text-text-main focus:outline-none ${textAlign}`}
             />
           </div>
 
-          <label className="text-sm font-medium block mb-2 text-text-primary">
+          <label className={`text-sm font-medium block mb-2 text-text-primary ${textAlign}`}>
             {t("verifyOTP.otp")}
           </label>
           <div className="flex flex-col items-center mb-6">
@@ -124,7 +126,7 @@ const VerifyOTP = () => {
                 </React.Fragment>
               ))}
             </div>
-            <div className="text-sm w-full px-2 py-1 text-end text-text-primary">
+            <div className={`text-sm w-full px-2 py-1 text-text-primary ${oppositeTextAlign}`}>
               {formatTime(timeLeft)}
             </div>
           </div>
@@ -136,10 +138,10 @@ const VerifyOTP = () => {
             {t("verifyOTP.verify")}
           </Button>
 
-          <p className="text-sm text-text-primary mt-4">
-            Didn't Receive the OTP?{" "}
+          <p className={`text-sm text-text-primary mt-4 ${textAlign}`}>
+            {t("verifyOTP.didntReceive")}{" "}
             <span className="text-[#8345E94D] font-semibold cursor-pointer">
-              RESEND IT
+              {t("verifyOTP.resend")}
             </span>
           </p>
         </div>

@@ -8,11 +8,13 @@ import LanguageToggle from "../../components/common/LanguageToggle";
 import ThemeToggle from "../../components/common/ThemeToggle";
 import { applyTheme } from '../../utils/theme';
 import { useSelector } from 'react-redux';
+import { useLanguageStyles } from '../../hooks/useLanguageStyles';
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const mode = useSelector((state) => state.theme.mode);
+  const { textAlign, textDirection } = useLanguageStyles();
 
   useEffect(() => {
     applyTheme(mode);
@@ -43,18 +45,18 @@ const ForgotPassword = () => {
         </div>
 
         {/* Right Side */}
-        <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-[8.5rem] text-text-main flex flex-col justify-center">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-2 text-text-primary">
+        <div className={`w-full lg:w-1/2 p-6 sm:p-8 lg:p-[8.5rem] text-text-main flex flex-col justify-center ${textDirection}`}>
+          <h2 className={`text-2xl sm:text-3xl font-bold mb-2 text-text-primary ${textAlign}`}>
             {t("forgotPassword.title")}
           </h2>
-          <p className="text-sm text-text-secondary mb-6 sm:mb-8">
+          <p className={`text-sm text-text-secondary mb-6 sm:mb-8 ${textAlign}`}>
             {t("forgotPassword.description")}
           </p>
 
           <div className="mb-5">
             <label
               htmlFor="email"
-              className="text-sm font-medium block mb-2 text-text-primary"
+              className={`text-sm font-medium block mb-2 text-text-primary ${textAlign}`}
             >
               {t("forgotPassword.email")}
             </label>
@@ -62,7 +64,7 @@ const ForgotPassword = () => {
               id="email"
               type="email"
               placeholder={t("forgotPassword.email")}
-              className="w-full -mt-1 p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-600 border border-border"
+              className={`w-full -mt-1 p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-600 border border-border ${textAlign}`}
             />
           </div>
 

@@ -13,12 +13,14 @@ import LanguageToggle from "../../components/common/LanguageToggle";
 import ThemeToggle from "../../components/common/ThemeToggle";
 import { applyTheme } from '../../utils/theme';
 import { useSelector } from 'react-redux';
+import { useLanguageStyles } from '../../hooks/useLanguageStyles';
 
 const Login = () => {
   const { t } = useTranslation();
   const [eye, seteye] = useState(true);
   const [loader, setLoader] = useState(false);
   const mode = useSelector((state) => state.theme.mode);
+  const { textAlign, oppositeTextAlign, textDirection, isRTL } = useLanguageStyles();
 
   useEffect(() => {
     applyTheme(mode);
@@ -57,7 +59,7 @@ const Login = () => {
         </div>
         {/* Left Side */}
         <div className="w-full lg:w-1/2 bg-accent text-text-main flex flex-col items-center justify-center p-6 sm:p-8 lg:p-10 rounded-[15px] mb-6 lg:mb-0 lg:mr-4 relative">
-          <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-text-main">
+          <h1 className={`text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-text-main ${textAlign}`}>
             {t("login.welcome")}
           </h1>
           <div className="h-24 sm:h-32 md:h-36 lg:h-40 flex items-center justify-center">
@@ -72,9 +74,9 @@ const Login = () => {
         </div>
 
         {/* Right Side */}
-        <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-[8.5rem] text-text-main flex flex-col justify-center">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-2 text-text-primary">{t("login.title")}</h2>
-          <p className="text-sm text-text-secondary mb-6 sm:mb-8">
+        <div className={`w-full lg:w-1/2 p-6 sm:p-8 lg:p-[8.5rem] text-text-main flex flex-col justify-center ${textDirection}`}>
+          <h2 className={`text-2xl sm:text-3xl font-bold mb-2 text-text-primary ${textAlign}`}>{t("login.title")}</h2>
+          <p className={`text-sm text-text-secondary mb-6 sm:mb-8 ${textAlign}`}>
             {t("login.description")}
           </p>
 
@@ -86,7 +88,7 @@ const Login = () => {
             <div className="form-group -mt-4">
               <label
                 htmlFor="email"
-                className="text-sm font-medium block mb-2 text-text-primary"
+                className={`text-sm font-medium block mb-2 text-text-primary ${textAlign}`}
               >
                 {t("login.email")}
               </label>
@@ -109,7 +111,7 @@ const Login = () => {
                   id="email"
                   type="email"
                   placeholder={t("login.email")}
-                  className="w-full p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-accent border border-border"
+                  className={`w-full p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-accent border border-border ${textAlign}`}
                 />
               </Form.Item>
             </div>
@@ -117,7 +119,7 @@ const Login = () => {
             <div className="form-group -mt-6 relative">
               <label
                 htmlFor="password"
-                className="text-sm font-medium block mb-2 text-text-primary"
+                className={`text-sm font-medium block mb-2 text-text-primary ${textAlign}`}
               >
                 {t("login.password")}
               </label>
@@ -137,11 +139,11 @@ const Login = () => {
                     id="password"
                     type={eye ? "password" : "text"}
                     placeholder={t("login.password")}
-                    className="w-full p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-accent pr-10 border border-border"
+                    className={`w-full p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-accent border border-border ${textAlign}`}
                   />
                   <span
                     onClick={onEyeClick}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary cursor-pointer"
+                    className={`absolute top-1/2 -translate-y-1/2 text-text-secondary cursor-pointer ${isRTL ? 'left-3' : 'right-3'}`}
                   >
                     {eye ? (
                       <EyeInvisibleOutlined className="text-text-secondary text-xl" />
@@ -155,7 +157,7 @@ const Login = () => {
 
             <a
               href="/forgot-password"
-              className="text-sm text-accent text-right -mt-9 mb-6 block"
+              className={`text-sm text-accent -mt-9 mb-6 block ${oppositeTextAlign}`}
             >
               {t("login.forgot")}
             </a>

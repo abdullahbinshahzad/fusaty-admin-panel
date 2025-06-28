@@ -8,11 +8,13 @@ import LanguageToggle from "../../components/common/LanguageToggle";
 import ThemeToggle from "../../components/common/ThemeToggle";
 import { applyTheme } from "../../utils/theme";
 import { useSelector } from 'react-redux';
+import { useLanguageStyles } from '../../hooks/useLanguageStyles';
 
 const CreateNewPassword = () => {
   const { t } = useTranslation();
   const [eye, seteye] = useState(true);
   const mode = useSelector((state) => state.theme.mode);
+  const { textAlign, textDirection, isRTL } = useLanguageStyles();
 
   useEffect(() => {
     applyTheme(mode);
@@ -43,18 +45,18 @@ const CreateNewPassword = () => {
         </div>
 
         {/* Right Side */}
-        <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-[8.5rem] text-text-main flex flex-col justify-center">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-2 text-text-primary">
+        <div className={`w-full lg:w-1/2 p-6 sm:p-8 lg:p-[8.5rem] text-text-main flex flex-col justify-center ${textDirection}`}>
+          <h2 className={`text-2xl sm:text-3xl font-bold mb-2 text-text-primary ${textAlign}`}>
             {t("createNewPassword.title")}
           </h2>
-          <p className="text-sm text-text-secondary mb-6 sm:mb-8">
+          <p className={`text-sm text-text-secondary mb-6 sm:mb-8 ${textAlign}`}>
             {t("createNewPassword.description")}
           </p>
 
           <div className="mb-2 relative">
             <label
               htmlFor="newPassword"
-              className="text-sm font-medium block mb-2 text-text-primary"
+              className={`text-sm font-medium block mb-2 text-text-primary ${textAlign}`}
             >
               {t("createNewPassword.newPassword")}
             </label>
@@ -62,11 +64,11 @@ const CreateNewPassword = () => {
               id="newPassword"
               type={eye ? "password" : "text"}
               placeholder={t("createNewPassword.enterNewPassword")}
-              className="w-full -mt-1 p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-600 pr-10 border border-border"
+              className={`w-full -mt-1 p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-600 border border-border ${textAlign}`}
             />
             <span
               onClick={onEyeClick}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary cursor-pointer"
+              className={`absolute top-1/2 -translate-y-1/2 text-text-secondary cursor-pointer ${isRTL ? 'left-3' : 'right-3'}`}
             >
               {eye ? (
                 <EyeInvisibleOutlined className="text-text-secondary text-xl" />
@@ -79,7 +81,7 @@ const CreateNewPassword = () => {
           <div className="mb-2 relative">
             <label
               htmlFor="confirmNewPassword"
-              className="text-sm font-medium block mb-2 text-text-primary"
+              className={`text-sm font-medium block mb-2 text-text-primary ${textAlign}`}
             >
               {t("createNewPassword.confirmPassword")}
             </label>
@@ -87,11 +89,11 @@ const CreateNewPassword = () => {
               id="confirmNewPassword"
               type={eye ? "password" : "text"}
               placeholder={t("createNewPassword.confirmNewPassword")}
-              className="w-full -mt-1 p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-600 pr-10 border border-border"
+              className={`w-full -mt-1 p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-600 border border-border ${textAlign}`}
             />
             <span
               onClick={onEyeClick}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary cursor-pointer"
+              className={`absolute top-1/2 -translate-y-1/2 text-text-secondary cursor-pointer ${isRTL ? 'left-3' : 'right-3'}`}
             >
               {eye ? (
                 <EyeInvisibleOutlined className="text-text-secondary text-xl" />

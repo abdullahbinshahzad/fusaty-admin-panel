@@ -40,7 +40,8 @@ i18n.use(initReactI18next).init({
           email: 'Email',
           otp: 'Enter OTP',
           verify: 'Verify',
-          resend: 'Didn\'t Receive the OTP? RESEND IT',
+          resend: 'RESEND IT',
+          didntReceive: 'Didn\'t Receive the OTP?',
           timeLeft: 'Time Left'
         }
       },
@@ -76,12 +77,13 @@ i18n.use(initReactI18next).init({
           confirmNewPassword: 'تأكيد كلمة المرور الجديدة'
         },
         verifyOTP: {
-          title: 'تحقق من OTP',
-          description: 'لقد أرسلنا إليك كلمة مرور لمرة واحدة (OTP) إلى بريدك الإلكتروني',
+          title: 'تحقق من مكتب المدعي العام',
+          description: 'لقد أرسلنا إليك كلمة مرور لمرة واحدة (مكتب المدعي العام) إلى بريدك الإلكتروني',
           email: 'البريد الإلكتروني',
-          otp: 'أدخل OTP',
+          otp: 'أدخل مكتب المدعي العام',
           verify: 'تحقق',
-          resend: 'لم تتلقَ الـ OTP؟ أعد إرسالها',
+          resend: 'أعد إرسالها',
+          didntReceive: 'لم تتلقَ الـ مكتب المدعي العام؟',
           timeLeft: 'الوقت المتبقي'
         }
       },
