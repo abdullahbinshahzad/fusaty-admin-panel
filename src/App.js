@@ -6,6 +6,7 @@ import Login from "./pages/auth/Login";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import CreateNewPassword from "./pages/auth/CreateNewPassword";
 import VerifyOTP from "./pages/auth/VerifyOTP";
+import ProviderManagement from './pages/ProviderManagement'
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/create-new-password" element={<CreateNewPassword />} />
           <Route path="/verify-otp" element={<VerifyOTP />} />
+          <Route path="/provider-management" element={<ProviderManagement />} />
         </Routes>
       </Router>
     </Provider>

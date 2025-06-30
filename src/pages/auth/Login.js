@@ -14,9 +14,11 @@ import ThemeToggle from "../../components/common/ThemeToggle";
 import { applyTheme } from '../../utils/theme';
 import { useSelector } from 'react-redux';
 import { useLanguageStyles } from '../../hooks/useLanguageStyles';
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [eye, seteye] = useState(true);
   const [loader, setLoader] = useState(false);
   const mode = useSelector((state) => state.theme.mode);
@@ -49,6 +51,10 @@ const Login = () => {
       spin
     />
   );
+
+  const handleSignIn = () => {
+    navigate("/provider-management");
+  };
 
   return (
     <div className="h-screen bg-background-main flex items-center justify-center px-4 sm:px-6 md:px-10 lg:px-[80px]">
@@ -156,7 +162,7 @@ const Login = () => {
             </div>
 
             <a
-              href="/forgot-password"
+              href="/provider-management"
               className={`text-sm text-accent -mt-9 mb-6 block ${oppositeTextAlign}`}
             >
               {t("login.forgot")}
@@ -164,7 +170,8 @@ const Login = () => {
 
             <div className="form-group text-center">
               <Button
-                htmlType="submit"
+                onClick={handleSignIn}
+                // htmlType="submit"
                 className="w-full bg-accent hover:bg-accent text-text-main font-bold py-3 rounded-xl text-lg transition duration-300"
                 disabled={loader}
               >
