@@ -64,7 +64,7 @@ const CreateNewPassword = () => {
               id="newPassword"
               type={eye ? "password" : "text"}
               placeholder={t("createNewPassword.enterNewPassword")}
-              className={`w-full -mt-1 p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-600 border border-border ${textAlign}`}
+              className={`w-full -mt-1 p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-600 border border-border-field ${textAlign}`}
             />
             <span
               onClick={onEyeClick}
@@ -89,7 +89,7 @@ const CreateNewPassword = () => {
               id="confirmNewPassword"
               type={eye ? "password" : "text"}
               placeholder={t("createNewPassword.confirmNewPassword")}
-              className={`w-full -mt-1 p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-600 border border-border ${textAlign}`}
+              className={`w-full -mt-1 p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-600 border border-border-field ${textAlign}`}
             />
             <span
               onClick={onEyeClick}

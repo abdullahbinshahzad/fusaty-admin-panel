@@ -9,11 +9,22 @@ module.exports = {
         background: {
           main: 'var(--background-main)',
           card: 'var(--background-card)',
+          filter: 'var(--background-filter)',
+          search: 'var(--background-search)',
+          activetab: 'var(--background-activetab)',
+          sidebaractivetab: 'var(--background-sidebaractivetab)',
+          thead: 'var(--background-thead)',
+          tbody: 'var(--background-tbody)',
+          sidemodal: 'var(--background-sidemodal)'
         },
         text: {
           main: 'var(--text-main)',
           primary: 'var(--text-primary)',
           secondary: 'var(--text-secondary)',
+          activetab: 'var(--text-activetab)',
+          tablehead: 'var(--text-tablehead)',
+          tablebody: 'var(--text-tablebody)',
+          tableactionbtn: 'var(--text-tableactionbtn)'
         },
         accent: 'var(--accent)',
         input: {
@@ -22,7 +33,18 @@ module.exports = {
           placeholder: 'var(--input-placeholder)',
           readonlybg: 'var(--input-readonlybg)',
         },
-        border: 'var(--border)',
+        border:{
+          field: 'var(--border-field)',
+          search: 'var(--border-search)',
+          activetab: 'var(--border-activetab)',
+          paginationbtn: 'var(--border-paginationbtn)'
+        },
+        searchbar: {
+          divider: 'var(--searchbar-divider)'
+        },
+        navbar: {
+          divider: 'var(--navbar-divider)'
+        },
       },
     },
   },

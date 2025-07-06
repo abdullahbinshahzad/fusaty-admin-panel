@@ -64,7 +64,7 @@ const ForgotPassword = () => {
               id="email"
               type="email"
               placeholder={t("forgotPassword.email")}
-              className={`w-full -mt-1 p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-600 border border-border ${textAlign}`}
+              className={`w-full -mt-1 p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-600 border border-border-field ${textAlign}`}
             />
           </div>
 

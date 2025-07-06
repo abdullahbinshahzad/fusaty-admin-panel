@@ -121,7 +121,7 @@ const VerifyOTP = () => {
                     onChange={(e) => handleChange(i, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(i, e)}
                     placeholder="-"
-                    className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 pb-2 text-center rounded-lg bg-background-main text-text-primary border-2 border-border focus:outline-none focus:ring-2 focus:ring-accent text-xl font-semibold placeholder:text-center placeholder:text-border"
+                    className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 pb-2 text-center rounded-lg bg-background-main text-text-primary border-2 border-border-field focus:outline-none focus:ring-2 focus:ring-accent text-xl font-semibold placeholder:text-center placeholder:text-border"
                   />
                 </React.Fragment>
               ))}

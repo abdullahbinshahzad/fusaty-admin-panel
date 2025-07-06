@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
-import logo from "../../assets/images/Login.svg";
+import logo from "../../assets/images/White Logo.svg";
 import { Form, message, Spin } from "antd";
 import {
   EyeOutlined,
@@ -15,12 +15,13 @@ import { applyTheme } from '../../utils/theme';
 import { useSelector } from 'react-redux';
 import { useLanguageStyles } from '../../hooks/useLanguageStyles';
 import { useNavigate } from "react-router-dom";
+import { useApi } from "../../hooks/useApi";
 
 const Login = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [eye, seteye] = useState(true);
-  const [loader, setLoader] = useState(false);
+  const { loading, login } = useApi();
   const mode = useSelector((state) => state.theme.mode);
   const { textAlign, oppositeTextAlign, textDirection, isRTL } = useLanguageStyles();
 
@@ -32,14 +33,14 @@ const Login = () => {
     seteye(!eye);
   };
 
-  const onFinish = () => {
-    setLoader(true);
-    console("onFinish function called");
-    const timer = setTimeout(() => {
-      setLoader(false);
-    }, 5000);
-
-    return () => clearTimeout(timer);
+  const onFinish = async (values) => {
+    try {
+      await login(values.email, values.password);
+      message.success(t("login.success"));
+      navigate("/provider-management");
+    } catch (error) {
+      message.error(error.message || t("login.error"));
+    }
   };
 
   const antIcon = (
@@ -52,9 +53,7 @@ const Login = () => {
     />
   );
 
-  const handleSignIn = () => {
-    navigate("/provider-management");
-  };
+
 
   return (
     <div className="h-screen bg-background-main flex items-center justify-center px-4 sm:px-6 md:px-10 lg:px-[80px]">
@@ -117,7 +116,7 @@ const Login = () => {
                   id="email"
                   type="email"
                   placeholder={t("login.email")}
-                  className={`w-full p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-accent border border-border ${textAlign}`}
+                  className={`w-full p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-accent border border-border-field ${textAlign}`}
                 />
               </Form.Item>
             </div>
@@ -145,7 +144,7 @@ const Login = () => {
                     id="password"
                     type={eye ? "password" : "text"}
                     placeholder={t("login.password")}
-                    className={`w-full p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-accent border border-border ${textAlign}`}
+                    className={`w-full p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-accent border border-border-field ${textAlign}`}
                   />
                   <span
                     onClick={onEyeClick}
@@ -162,7 +161,7 @@ const Login = () => {
             </div>
 
             <a
-              href="/provider-management"
+              href="/forgot-password"
               className={`text-sm text-accent -mt-9 mb-6 block ${oppositeTextAlign}`}
             >
               {t("login.forgot")}
@@ -170,12 +169,11 @@ const Login = () => {
 
             <div className="form-group text-center">
               <Button
-                onClick={handleSignIn}
-                // htmlType="submit"
+                htmlType="submit"
                 className="w-full bg-accent hover:bg-accent text-text-main font-bold py-3 rounded-xl text-lg transition duration-300"
-                disabled={loader}
+                disabled={loading}
               >
-                {loader ? (
+                {loading ? (
                   <Spin size="small" indicator={antIcon} />
                 ) : (
                   t("login.signIn")
