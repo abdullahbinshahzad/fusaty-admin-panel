@@ -70,3 +70,14 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@font-face {
+  font-family: 'Alexandria';
+  src: url('./assets/fonts/Alexandria-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.arabic-font, .arabic-font * {
+  font-family: 'Alexandria', sans-serif !important;
+}
