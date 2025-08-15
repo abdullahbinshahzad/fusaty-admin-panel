@@ -5,7 +5,7 @@ export const theme = {
     '--background-main': '#EEF3F9',
     '--background-card': '#FFFFFF',
     '--background-filter': '#DFE6EDA3',
-    '--background-search': '#FFFFFFBF',
+    '--background-search': '#FFFFFF',
     '--background-activetab': '#FFFFFF',
     '--background-thead':'#DFE6ED',
     '--background-tbody':'#FFFFFF',

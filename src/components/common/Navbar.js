@@ -29,23 +29,23 @@ const Navbar = () => {
     
     switch (path) {
       case '/dashboard':
-        return 'Dashboard';
+        return t('sidebar.dashboard');
       case '/user-management':
-        return 'User Management';
+        return t('sidebar.userManagement');
       case '/provider-management':
         return t('sidebar.providerManagement');
       case '/order-management':
-        return 'Order Management';
+        return t('sidebar.orderManagement');
       case '/category-management':
-        return 'Category Management';
+        return t('sidebar.categoryManagement');
       case '/ratings-management':
-        return 'Ratings Management';
+        return t('sidebar.ratingsManagement');
       case '/payment-management':
-        return 'Payment Management';
+        return t('sidebar.paymentManagement');
       case '/provider-payout':
-        return 'Provider Payout';
+        return t('sidebar.providerPayout');
       default:
-        return 'Provider Management'; // Default fallback
+        return t('sidebar.providerManagement'); // Default fallback
     }
   };
 

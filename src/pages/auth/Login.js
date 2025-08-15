@@ -14,12 +14,13 @@ import ThemeToggle from "../../components/common/ThemeToggle";
 import { applyTheme } from '../../utils/theme';
 import { useSelector } from 'react-redux';
 import { useLanguageStyles } from '../../hooks/useLanguageStyles';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useApi } from "../../hooks/useApi";
 
 const Login = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const [eye, seteye] = useState(true);
   const { loading, login } = useApi();
   const mode = useSelector((state) => state.theme.mode);
@@ -28,6 +29,15 @@ const Login = () => {
   useEffect(() => {
     applyTheme(mode);
   }, [mode]);
+
+  useEffect(() => {
+    // Display success message if coming from password reset
+    if (location.state?.message) {
+      message.success(location.state.message);
+      // Clear the message from state
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.state?.message, navigate, location.pathname]);
 
   const onEyeClick = () => {
     seteye(!eye);
@@ -57,8 +67,8 @@ const Login = () => {
 
   return (
     <div className="h-screen bg-background-main flex items-center justify-center px-4 sm:px-6 md:px-10 lg:px-[80px]">
-      <div className="flex flex-col lg:flex-row w-full max-w-[1279px] h-[90vh] lg:h-[80vh] p-6 sm:p-8 lg:p-[40px] bg-background-card rounded-[30px] overflow-hidden shadow-xl relative">
-        <div className="absolute top-10 right-10 flex space-x-4">
+      <div className="flex flex-col lg:flex-row w-full max-w-[1279px] h-[90vh] lg:h-[80vh] p-6 sm:p-8 lg:p-[40px] bg-background-card rounded-[30px] overflow-hidden shadow-xl relative overflow-y-auto lg:overflow-visible">
+        <div className="absolute top-10 right-10 hidden lg:flex space-x-4">
           <LanguageToggle />
           <ThemeToggle />
         </div>
@@ -79,7 +89,12 @@ const Login = () => {
         </div>
 
         {/* Right Side */}
-        <div className={`w-full lg:w-1/2 p-6 sm:p-8 lg:p-[8.5rem] text-text-main flex flex-col justify-center ${textDirection}`}>
+        <div className={`w-full lg:w-1/2 p-6 sm:p-8 lg:p-[6.5rem] text-text-main flex flex-col justify-center ${textDirection}`}>
+          {/* Toggle buttons for small screens */}
+          <div className="flex justify-end space-x-4 lg:hidden">
+            <LanguageToggle />
+            <ThemeToggle />
+          </div>
           <h2 className={`text-2xl sm:text-3xl font-bold mb-2 text-text-primary ${textAlign}`}>{t("login.title")}</h2>
           <p className={`text-sm text-text-secondary mb-6 sm:mb-8 ${textAlign}`}>
             {t("login.description")}

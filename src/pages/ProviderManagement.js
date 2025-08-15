@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { applyTheme } from "../utils/theme";
@@ -18,6 +18,7 @@ import { message } from "antd";
 
 const ProviderManagement = () => {
   const { t } = useTranslation();
+  const dropdownRef = useRef(null);
   const [activeTab, setActiveTab] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState(null);
@@ -103,6 +104,20 @@ const ProviderManagement = () => {
   useEffect(() => {
     applyTheme(mode);
   }, [mode]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // Fetch providers on component mount and when pagination changes
   useEffect(() => {
@@ -263,15 +278,17 @@ const ProviderManagement = () => {
               className="text-text-tableactionbtn hover:underline"
               onClick={() => handleView(row)}
             >
-              View
+              {t('table.view')}
             </button>
             <button 
               className="text-[#00B050] hover:underline"
               onClick={() => handleApprove(row._id)}
             >
-              Approve
+              {t('table.approve')}
             </button>
-            <button className="text-[#FF0000] hover:underline">Reject</button>
+            <button className="text-[#FF0000] hover:underline">
+              {t('table.reject')}
+            </button>
           </div>
         ),
       };
@@ -286,8 +303,8 @@ const ProviderManagement = () => {
         <Sidebar />
         <main className="flex-1 p-8 pt-4 overflow-y-auto">
           {/* Header and Filters */}
-          <div className="flex flex-col md:flex-row md:items-center mb-4">
-            <div className="flex items-center bg-background-search rounded-l-full px-4 py-2 w-full md:w-1/3 border-l border-y border-border-search">
+          <div className="flex justify-start mb-4">
+            <div className="flex items-center bg-background-search rounded-l-full px-4 py-2 w-full max-w-sm sm:max-w-sm md:max-w-sm border border-border-search">
               <FaSearch className="text-[#81879D] mr-2" />
               <input
                 type="text"

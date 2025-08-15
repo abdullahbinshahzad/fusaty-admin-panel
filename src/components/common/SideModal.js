@@ -23,15 +23,24 @@ const SideModal = ({ open, onClose, title, children, actions }) => {
         aria-hidden="true"
       />
       <aside
-        className={`relative bg-background-sidemodal w-full max-w-md h-full shadow-xl transform transition-transform duration-300 ${open ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`relative bg-background-sidemodal w-full max-w-md h-full shadow-xl transform transition-transform duration-300 flex flex-col ${open ? 'translate-x-0' : 'translate-x-full'}`}
       >
-        <div className="flex items-center justify-between p-6 border-b">
+        {/* Header - Fixed */}
+        <div className="flex items-center justify-between p-6 border-b flex-shrink-0">
           <h2 className="text-lg text-text-primary font-semibold">{title}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-700 text-2xl leading-none">&times;</button>
         </div>
-        <div className="p-6 overflow-y-auto flex-1">{children}</div>
+        
+        {/* Content - Scrollable */}
+        <div className="flex-1 overflow-y-auto p-6">
+          {children}
+        </div>
+        
+        {/* Footer - Fixed */}
         {actions && (
-          <div className="absolute bottom-0 left-0 w-full p-6 bg-background-sidemodal flex flex-col gap-3">{actions}</div>
+          <div className="p-6 bg-background-sidemodal flex flex-col gap-3 flex-shrink-0 border-t">
+            {actions}
+          </div>
         )}
       </aside>
     </div>

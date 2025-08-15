@@ -69,4 +69,32 @@ export const apiService = {
       method: 'PATCH',
     });
   },
+
+  forgotPassword: async (email) => {
+    return apiService.makeRequest(API_ENDPOINTS.FORGOT_PASSWORD, {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  },
+
+  verifyOTP: async (email, resetPasswordOtp) => {
+    return apiService.makeRequest(API_ENDPOINTS.VERIFY_OTP, {
+      method: 'POST',
+      body: JSON.stringify({ email, resetPasswordOtp }),
+    });
+  },
+
+  resetPassword: async (password, otp) => {
+    return apiService.makeRequest(`${API_ENDPOINTS.RESET_PASSWORD}?resetPasswordOtp=${otp}`, {
+      method: 'POST',
+      body: JSON.stringify({ password }),
+    });
+  },
+
+  resendOTP: async (email) => {
+    return apiService.makeRequest(API_ENDPOINTS.RESEND_OTP, {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  },
 };

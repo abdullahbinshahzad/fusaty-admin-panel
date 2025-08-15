@@ -1,4 +1,4 @@
-import React , { useEffect } from "react";
+import React , { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/common/Button";
@@ -9,25 +9,82 @@ import ThemeToggle from "../../components/common/ThemeToggle";
 import { applyTheme } from '../../utils/theme';
 import { useSelector } from 'react-redux';
 import { useLanguageStyles } from '../../hooks/useLanguageStyles';
+import { apiService } from '../../services/api';
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const mode = useSelector((state) => state.theme.mode);
   const { textAlign, textDirection } = useLanguageStyles();
+  
+  // State for email input and validation
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     applyTheme(mode);
   }, [mode]);
 
-  const handleSendOTP = () => {
-    navigate("/verify-otp");
+  // Email validation function
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Handle email input change
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    
+    // Clear error when user starts typing
+    if (emailError) {
+      setEmailError('');
+    }
+  };
+
+  // Handle Enter key press
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSendOTP();
+    }
+  };
+
+  // Handle send OTP with validation and API call
+  const handleSendOTP = async () => {
+    // Validate email format
+    if (!email.trim()) {
+      setEmailError(t("forgotPassword.emailRequired") || "Email is required");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setEmailError(t("forgotPassword.invalidEmail") || "Please enter a valid email address");
+      return;
+    }
+
+    setIsLoading(true);
+    setEmailError('');
+
+    try {
+      const data = await apiService.forgotPassword(email.trim());
+      console.log('OTP sent successfully:', data);
+      
+      // Navigate to OTP verification page
+      navigate("/verify-otp", { state: { email: email.trim() } });
+      
+    } catch (error) {
+      console.error('Error sending OTP:', error);
+      setEmailError(error.message || t("forgotPassword.sendOTPError") || "Failed to send OTP. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="h-screen bg-background-main flex items-center justify-center px-4 sm:px-6 md:px-10 lg:px-[80px]">
-      <div className="flex flex-col lg:flex-row w-full max-w-[1279px] h-[90vh] lg:h-[80vh] p-6 sm:p-8 lg:p-[40px] bg-background-card rounded-[30px] overflow-hidden shadow-xl relative">
-        <div className="absolute top-10 right-10 flex space-x-4">
+      <div className="flex flex-col lg:flex-row w-full max-w-[1279px] h-[90vh] lg:h-[80vh] p-6 sm:p-8 lg:p-[40px] bg-background-card rounded-[30px] overflow-hidden shadow-xl relative overflow-y-auto lg:overflow-visible">
+        <div className="absolute top-10 right-10 hidden lg:flex space-x-4">
           <LanguageToggle />
           <ThemeToggle />
         </div>
@@ -45,7 +102,12 @@ const ForgotPassword = () => {
         </div>
 
         {/* Right Side */}
-        <div className={`w-full lg:w-1/2 p-6 sm:p-8 lg:p-[8.5rem] text-text-main flex flex-col justify-center ${textDirection}`}>
+        <div className={`w-full lg:w-1/2 p-6 sm:p-8 lg:p-[6.5rem] text-text-main flex flex-col justify-center ${textDirection}`}>
+          {/* Toggle buttons for small screens */}
+          <div className="flex justify-end space-x-4 lg:hidden">
+            <LanguageToggle />
+            <ThemeToggle />
+          </div>
           <h2 className={`text-2xl sm:text-3xl font-bold mb-2 text-text-primary ${textAlign}`}>
             {t("forgotPassword.title")}
           </h2>
@@ -64,15 +126,24 @@ const ForgotPassword = () => {
               id="email"
               type="email"
               placeholder={t("forgotPassword.email")}
-              className={`w-full -mt-1 p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-600 border border-border-field ${textAlign}`}
+              value={email}
+              onChange={handleEmailChange}
+              onKeyPress={handleKeyPress}
+              className={`w-full -mt-1 p-3 rounded-lg bg-input-bg text-input-text placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-600 border border-border-field ${textAlign} ${emailError ? 'border-red-500' : ''}`}
             />
+            {emailError && <p className="text-sm text-red-500 mt-1">{emailError}</p>}
           </div>
 
           <Button
             onClick={handleSendOTP}
-            className="w-full bg-accent hover:bg-accent text-text-main font-bold py-3 rounded-xl text-lg transition duration-300"
+            className={`w-full font-bold py-3 rounded-xl text-lg transition duration-300 ${
+              isLoading 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-accent hover:bg-accent text-text-main'
+            }`}
+            disabled={isLoading}
           >
-            {t("forgotPassword.sendOTP")}
+            {isLoading ? (t("forgotPassword.sendingOTP") || "Sending OTP...") : (t("forgotPassword.sendOTP") || "Send OTP")}
           </Button>
         </div>
       </div>
