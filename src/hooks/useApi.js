@@ -79,6 +79,33 @@ export const useApi = () => {
     }
   }, [executeRequest]);
 
+  const getUsers = useCallback(async (page = 1, limit = 10) => {
+    try {
+      const response = await executeRequest(apiService.getUsers, page, limit);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }, [executeRequest]);
+
+  const updateUserTries = useCallback(async (userId, tries) => {
+    try {
+      const response = await executeRequest(apiService.updateUserTries, userId, tries);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }, [executeRequest]);
+
+  const deactivateUser = useCallback(async (userId) => {
+    try {
+      const response = await executeRequest(apiService.deactivateUser, userId);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }, [executeRequest]);
+
   const approveProvider = useCallback(async (providerId) => {
     try {
       const response = await executeRequest(apiService.approveProvider, providerId);
@@ -93,6 +120,9 @@ export const useApi = () => {
     error,
     login,
     getProviders,
+    getUsers,
+    updateUserTries,
+    deactivateUser,
     approveProvider,
   };
 }; 

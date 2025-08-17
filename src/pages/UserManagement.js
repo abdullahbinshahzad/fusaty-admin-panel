@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { applyTheme } from "../utils/theme";
@@ -7,7 +7,7 @@ import Navbar from "../components/common/Navbar";
 import DataTable from "../components/common/DataTable";
 import { FaSearch, FaChevronDown } from "react-icons/fa";
 import SideModal from "../components/common/SideModal";
-// import { useApi } from "../hooks/useApi";
+import { useApi } from "../hooks/useApi";
 import { message } from "antd";
 
 const UserManagement = () => {
@@ -26,102 +26,10 @@ const UserManagement = () => {
   const [searchOption, setSearchOption] = useState("name");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [updateTriesValue, setUpdateTriesValue] = useState("");
-//   const { getUsers, updateUserTries, deactivateUser } = useApi();
+  const { getUsers, updateUserTries, deactivateUser } = useApi();
   const mode = useSelector((state) => state.theme.mode);
 
-  // Dummy data for users
-  const dummyUsers = useMemo(() => [
-    {
-      _id: "1",
-      fullName: "John Doe",
-      email: "john.doe@example.com",
-      phoneNo: "+1234567890",
-      status: "Active",
-      freeTriesLeft: 5,
-      createdAt: "2024-01-15T10:30:00Z"
-    },
-    {
-      _id: "2",
-      fullName: "Jane Smith",
-      email: "jane.smith@example.com",
-      phoneNo: "+1234567891",
-      status: "In Active",
-      freeTriesLeft: 0,
-      createdAt: "2024-01-10T14:20:00Z"
-    },
-    {
-      _id: "3",
-      fullName: "Mike Johnson",
-      email: "mike.johnson@example.com",
-      phoneNo: "+1234567892",
-      status: "Active",
-      freeTriesLeft: 3,
-      createdAt: "2024-01-20T09:15:00Z"
-    },
-    {
-      _id: "4",
-      fullName: "Sarah Wilson",
-      email: "sarah.wilson@example.com",
-      phoneNo: "+1234567893",
-      status: "Active",
-      freeTriesLeft: 8,
-      createdAt: "2024-01-05T16:45:00Z"
-    },
-    {
-      _id: "5",
-      fullName: "David Brown",
-      email: "david.brown@example.com",
-      phoneNo: "+1234567894",
-      status: "In Active",
-      freeTriesLeft: 1,
-      createdAt: "2024-01-12T11:30:00Z"
-    },
-    {
-      _id: "6",
-      fullName: "Emily Davis",
-      email: "emily.davis@example.com",
-      phoneNo: "+1234567895",
-      status: "Active",
-      freeTriesLeft: 10,
-      createdAt: "2024-01-18T13:20:00Z"
-    },
-    {
-      _id: "7",
-      fullName: "Robert Miller",
-      email: "robert.miller@example.com",
-      phoneNo: "+1234567896",
-      status: "Active",
-      freeTriesLeft: 2,
-      createdAt: "2024-01-08T15:10:00Z"
-    },
-    {
-      _id: "8",
-      fullName: "Lisa Garcia",
-      email: "lisa.garcia@example.com",
-      phoneNo: "+1234567897",
-      status: "In Active",
-      freeTriesLeft: 0,
-      createdAt: "2024-01-25T10:00:00Z"
-    },
-    {
-      _id: "9",
-      fullName: "James Taylor",
-      email: "james.taylor@example.com",
-      phoneNo: "+1234567898",
-      status: "Active",
-      freeTriesLeft: 7,
-      createdAt: "2024-01-14T12:30:00Z"
-    },
-    {
-      _id: "10",
-      fullName: "Maria Rodriguez",
-      email: "maria.rodriguez@example.com",
-      phoneNo: "+1234567899",
-      status: "Active",
-      freeTriesLeft: 4,
-      createdAt: "2024-01-22T08:45:00Z"
-    }
-  ], []);
+
 
   // Define columns inside component to access translation function
   const columns = [
@@ -136,24 +44,24 @@ const UserManagement = () => {
       render: (val) => <span className="text-text-tablebody">{val}</span>,
     },
     {
-      key: "status",
+      key: "isActive",
       title: t('table.status'),
       render: (val) => (
         <span
           className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-            val === "Active"
+            val === true
               ? "bg-[#55CE631A] text-[#55CE63]"
-              : val === "In Active"
+              : val === false
               ? "bg-[#FFBC341A] text-[#FFBC34]"
               : "bg-gray-200 text-gray-600"
           }`}
         >
-          {val || "Unknown"}
+          {val === true ? "Active" : val === false ? "In Active" : "Unknown"}
         </span>
       ),
     },
     {
-      key: "freeTriesLeft",
+      key: "tries",
       title: t('table.freeTriesLeft'),
       render: (val) => <span className="text-text-tablebody">{val || 0}</span>,
     },
@@ -225,20 +133,56 @@ const UserManagement = () => {
 //     fetchUsers();
 // }, [pagination.currentPage, pagination.itemsPerPage, getUsers]);
 
-    // Set dummy data on component mount
+    // Fetch users on component mount and when pagination changes
     useEffect(() => {
-    setUsers(dummyUsers);
-    setPagination(prev => ({
-      ...prev,
-      totalPages: Math.ceil(dummyUsers.length / pagination.itemsPerPage),
-      totalItems: dummyUsers.length,
-    }));
-  }, [dummyUsers, pagination.itemsPerPage]);
+      const fetchUsers = async () => {
+        try {
+          const response = await getUsers(pagination.currentPage, pagination.itemsPerPage);
+          
+          console.log('Users API response:', response);
+          console.log('Response.data:', response.data);
+          console.log('Response.data type:', typeof response.data);
+          console.log('Is response.data array?', Array.isArray(response.data));
+          
+          if (response.success) {
+            // Handle the actual API response structure
+            let usersData = [];
+            if (response.data && response.data.users && Array.isArray(response.data.users)) {
+              usersData = response.data.users;
+            } else if (response.data && response.data.docs && Array.isArray(response.data.docs)) {
+              usersData = response.data.docs;
+            } else if (Array.isArray(response.data)) {
+              usersData = response.data;
+            } else if (Array.isArray(response.result)) {
+              usersData = response.result;
+            } else {
+              console.warn('No valid users array found in response:', response);
+              usersData = [];
+            }
+            
+            console.log('Setting users to:', usersData);
+            setUsers(usersData);
+            setPagination(prev => ({
+              ...prev,
+              totalPages: response.data?.totalPages || 1,
+              totalItems: response.data?.totalDocs || 0,
+            }));
+          } else {
+            message.error(response.message || "Failed to fetch users");
+          }
+        } catch (error) {
+          message.error("Error fetching users");
+          console.error("Error fetching users:", error);
+        }
+      };
+
+      fetchUsers();
+    }, [pagination.currentPage, pagination.itemsPerPage, getUsers]);
 
   // Handler for opening update tries modal
   const handleUpdateTries = (row) => {
     setSelectedUser(row);
-    setUpdateTriesValue(row.freeTriesLeft?.toString() || "0");
+    setUpdateTriesValue(row.tries?.toString() || "0");
     setUpdateTriesModalOpen(true);
   };
 
@@ -270,22 +214,33 @@ const UserManagement = () => {
 //       console.error("Error updating user tries:", error);
 //     }
 //   };
-    const handleSaveUpdateTries = () => {
-    message.success("User tries updated successfully!");
-    
-    // Update the specific user in the users array
-    setUsers(prevUsers => 
-      prevUsers.map(user => 
-        user._id === selectedUser._id 
-          ? { ...user, freeTriesLeft: parseInt(updateTriesValue) }
-          : user
-      )
-    );
-    
-    setUpdateTriesModalOpen(false);
-    setSelectedUser(null);
-    setUpdateTriesValue("");
-  };
+    const handleSaveUpdateTries = async () => {
+      try {
+        const response = await updateUserTries(selectedUser._id, parseInt(updateTriesValue));
+        
+        if (response.success) {
+          message.success("User tries updated successfully!");
+          
+          // Update the specific user in the users array
+          setUsers(prevUsers => 
+            prevUsers.map(user => 
+              user._id === selectedUser._id 
+                ? { ...user, tries: parseInt(updateTriesValue) }
+                : user
+            )
+          );
+          
+          setUpdateTriesModalOpen(false);
+          setSelectedUser(null);
+          setUpdateTriesValue("");
+        } else {
+          message.error(response.message || "Failed to update user tries");
+        }
+      } catch (error) {
+        message.error("Error updating user tries");
+        console.error("Error updating user tries:", error);
+      }
+    };
 
   // Handler for deactivating a user
 //   const handleDeactivate = async (userId) => {
@@ -317,21 +272,32 @@ const UserManagement = () => {
 //     }
 //   };
 
-  const handleDeactivate = (userId) => {
-    message.success("User deactivated successfully!");
-    
-    // Update the specific user in the users array
-    setUsers(prevUsers => 
-      prevUsers.map(user => 
-        user._id === userId 
-          ? { ...user, status: "In Active" }
-          : user
-      )
-    );
-    
-    // If the modal is open and we're deactivating the selected user, update it too
-    if (selectedUser && selectedUser._id === userId) {
-      setSelectedUser(prev => ({ ...prev, status: "In Active" }));
+  const handleDeactivate = async (userId) => {
+    try {
+      const response = await deactivateUser(userId);
+      
+      if (response.success) {
+        message.success("User deactivated successfully!");
+        
+        // Update the specific user in the users array
+        setUsers(prevUsers => 
+          prevUsers.map(user => 
+            user._id === userId 
+              ? { ...user, isActive: false }
+              : user
+          )
+        );
+        
+        // If the modal is open and we're deactivating the selected user, update it too
+        if (selectedUser && selectedUser._id === userId) {
+          setSelectedUser(prev => ({ ...prev, isActive: false }));
+        }
+      } else {
+        message.error(response.message || "Failed to deactivate user");
+      }
+    } catch (error) {
+      message.error("Error deactivating user");
+      console.error("Error deactivating user:", error);
     }
   };
 
@@ -379,7 +345,7 @@ const UserManagement = () => {
       case "email":
         return user.email?.toLowerCase().includes(searchValue) || false;
       case "status":
-        const statusText = user.status?.toLowerCase() || "unknown";
+        const statusText = user.isActive === true ? "active" : user.isActive === false ? "in active" : "unknown";
         return statusText.includes(searchValue);
       default:
         return (user.fullName?.toLowerCase().includes(searchValue) || false) ||
@@ -592,7 +558,7 @@ const UserManagement = () => {
           <div>
             <div className="mb-4">
               <div className="font-medium text-text-primary mb-2">
-                Remaining Tries : {selectedUser.freeTriesLeft || 0}
+                Remaining Tries : {selectedUser.tries || 0}
               </div>
             </div>
             <div className="mb-4">

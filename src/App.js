@@ -11,6 +11,7 @@ import ProviderManagement from './pages/ProviderManagement'
 import OrderManagement from './pages/OrderManagement' 
 import CategoryManagement from './pages/CategoryManagement'
 import RatingManagement from './pages/RatingManagement'
+import PaymentManagement from './pages/PaymentManagement'
 
 // New wrapper to access Redux state
 const AppContent = () => {
@@ -29,6 +30,7 @@ const AppContent = () => {
           <Route path="/order-management" element={<OrderManagement />} />
           <Route path="/category-management" element={<CategoryManagement />} />
           <Route path="/ratings-management" element={<RatingManagement />} />
+          <Route path="/payment-management" element={<PaymentManagement />} />
         </Routes>
       </Router>
     </div>

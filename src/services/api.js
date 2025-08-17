@@ -64,6 +64,17 @@ export const apiService = {
     });
   },
 
+  getUsers: async (page = 1, limit = 10) => {
+    const queryParams = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+    });
+    
+    return apiService.makeRequest(`${API_ENDPOINTS.GET_USERS}&${queryParams}`, {
+      method: 'GET',
+    });
+  },
+
   approveProvider: async (providerId) => {
     return apiService.makeRequest(`${API_ENDPOINTS.APPROVE_PROVIDER}?providerId=${providerId}`, {
       method: 'PATCH',
@@ -95,6 +106,20 @@ export const apiService = {
     return apiService.makeRequest(API_ENDPOINTS.RESEND_OTP, {
       method: 'POST',
       body: JSON.stringify({ email }),
+    });
+  },
+
+  updateUserTries: async (userId, tries) => {
+    return apiService.makeRequest(`${API_ENDPOINTS.UPDATE_TRIES}/${userId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ tries: tries }),
+    });
+  },
+
+  deactivateUser: async (userId) => {
+    return apiService.makeRequest(`${API_ENDPOINTS.DEACTIVATE_USER}/${userId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ isActive: false }),
     });
   },
 };
