@@ -237,9 +237,9 @@ const OrderManagement = () => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -380,7 +380,7 @@ const OrderManagement = () => {
               className="text-text-tableactionbtn hover:underline"
               onClick={() => handleView(row)}
             >
-              {t('table.view')}
+              {t("table.view")}
             </button>
           </div>
         ),
@@ -582,13 +582,13 @@ const OrderManagement = () => {
       <SideModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={t('orderDetail.title'	)}
+        title={t("orderDetail.title")}
         actions={
           <button
             className="w-full py-3 rounded-xl bg-accent text-white font-semibold text-lg"
             onClick={() => alert("Export functionality")}
           >
-            {t('orderDetail.export')}
+            {t("orderDetail.export")}
           </button>
         }
       >
@@ -596,41 +596,45 @@ const OrderManagement = () => {
           <div>
             {/* Order Info Section */}
             <h3 className="text-lg font-semibold mb-4 text-text-primary">
-              {t('orderDetail.orderInfo')}
+              {t("orderDetail.orderInfo")}
             </h3>
             <div className="grid grid-cols-1 gap-4 mb-4 border-b pb-4">
               {/* Order ID and Order Date in same row */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <span className="font-medium text-text-primary">{t('orderDetail.orderId')}:</span>
+                  <span className="font-medium text-text-primary">
+                    {t("orderDetail.orderId")}:
+                  </span>
                   <div className="text-text-secondary mt-1">
                     {selectedOrder.orderId}
                   </div>
                 </div>
                 <div>
                   <span className="font-medium text-text-primary">
-                    {t('orderDetail.orderDate')}
+                    {t("orderDetail.orderDate")}
                   </span>
                   <div className="text-text-secondary mt-1">
                     {new Date(selectedOrder.date).toLocaleDateString()}
                   </div>
                 </div>
               </div>
-              
+
               {/* Address on its own row */}
               <div>
-                <span className="font-medium text-text-primary">{t('orderDetail.address')}:</span>
+                <span className="font-medium text-text-primary">
+                  {t("orderDetail.address")}:
+                </span>
                 <div className="text-text-secondary mt-1">
                   {selectedOrder.address ||
                     "House no 53, Street no 1, Area, City"}
                 </div>
               </div>
-              
+
               {/* Provider Name and Provider Contact Num in same row */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <span className="font-medium text-text-primary">
-                    {t('orderDetail.providerName')}:
+                    {t("orderDetail.providerName")}:
                   </span>
                   <div className="text-text-secondary mt-1">
                     {selectedOrder.providerName}
@@ -638,19 +642,19 @@ const OrderManagement = () => {
                 </div>
                 <div>
                   <span className="font-medium text-text-primary">
-                    {t('orderDetail.providerContactNum')}:
+                    {t("orderDetail.providerContactNum")}:
                   </span>
                   <div className="text-text-secondary mt-1">
                     {selectedOrder.providerContact || "+996 5xxxxxxxxxx"}
                   </div>
                 </div>
               </div>
-              
+
               {/* User Name and User Contact Num in same row */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <span className="font-medium text-text-primary">
-                    {t('orderDetail.userName')}:
+                    {t("orderDetail.userName")}:
                   </span>
                   <div className="text-text-secondary mt-1">
                     {selectedOrder.userName}
@@ -658,24 +662,28 @@ const OrderManagement = () => {
                 </div>
                 <div>
                   <span className="font-medium text-text-primary">
-                    {t('orderDetail.userContactNum')}:
+                    {t("orderDetail.userContactNum")}:
                   </span>
                   <div className="text-text-secondary mt-1">
                     {selectedOrder.userContact || "+996 5xxxxxxxxxx"}
                   </div>
                 </div>
               </div>
-              
+
               {/* Category and Status in same row */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <span className="font-medium text-text-primary">{t('orderDetail.category')}:</span>
+                  <span className="font-medium text-text-primary">
+                    {t("orderDetail.category")}:
+                  </span>
                   <div className="text-text-secondary mt-1">
                     {selectedOrder.category}
                   </div>
                 </div>
                 <div>
-                  <span className="font-medium text-text-primary">{t('orderDetail.status')}:</span>
+                  <span className="font-medium text-text-primary">
+                    {t("orderDetail.status")}:
+                  </span>
                   <div className="mt-1">
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
@@ -689,12 +697,12 @@ const OrderManagement = () => {
                       }`}
                     >
                       {selectedOrder.status === "completed"
-                        ? t('orderDetail.completed')
+                        ? t("orderDetail.completed")
                         : selectedOrder.status === "inProgress"
-                        ? t('orderDetail.inProgress')
+                        ? t("orderDetail.inProgress")
                         : selectedOrder.status === "cancelled"
-                        ? t('orderDetail.cancelled')
-                        : t('orderDetail.unknown')}
+                        ? t("orderDetail.cancelled")
+                        : t("orderDetail.unknown")}
                     </span>
                   </div>
                 </div>
@@ -703,7 +711,7 @@ const OrderManagement = () => {
 
             {/* Payment Info Section */}
             <h3 className="text-lg font-semibold mb-4 text-text-primary">
-              {t('orderDetail.paymentInfo')}
+              {t("orderDetail.paymentInfo")}
             </h3>
             <div className="space-y-2">
               <div className="flex justify-between">
@@ -720,7 +728,7 @@ const OrderManagement = () => {
               </div>
               <div className="flex justify-between border-t pt-2">
                 <span className="font-semibold text-text-primary">
-                  {t('orderDetail.subTotal')}:
+                  {t("orderDetail.subTotal")}:
                 </span>
                 <span className="font-semibold text-text-primary">150 SAR</span>
               </div>

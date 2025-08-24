@@ -38,6 +38,10 @@ const Navbar = () => {
         return t('sidebar.orderManagement');
       case '/category-management':
         return t('sidebar.categoryManagement');
+      case '/sub-category-management':
+        return t('sidebar.subCategoryManagement');
+      case '/sub-to-sub-category-management':
+        return t('sidebar.subToSubCategoryManagement');
       case '/ratings-management':
         return t('sidebar.ratingsManagement');
       case '/payment-management':
@@ -45,7 +49,7 @@ const Navbar = () => {
       case '/provider-payout':
         return t('sidebar.providerPayout');
       default:
-        return t('sidebar.providerManagement'); // Default fallback
+        return t('sidebar.dashboard'); // Default fallback
     }
   };
 

@@ -15,7 +15,8 @@ module.exports = {
           sidebaractivetab: 'var(--background-sidebaractivetab)',
           thead: 'var(--background-thead)',
           tbody: 'var(--background-tbody)',
-          sidemodal: 'var(--background-sidemodal)'
+          sidemodal: 'var(--background-sidemodal)',
+          user: 'var(--background-user)',
         },
         text: {
           main: 'var(--text-main)',

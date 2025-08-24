@@ -486,7 +486,7 @@ const RatingManagement = () => {
           </div>
 
           {/* Rating Dropdown */}
-          <div className="flex justify-end mt-4 -mb-8">
+          <div className="flex justify-end -mt-[14px] -mb-8">
             <div className="relative" ref={ratingDropdownRef}>
               <button
                 onClick={() => setRatingDropdownOpen(!ratingDropdownOpen)}
