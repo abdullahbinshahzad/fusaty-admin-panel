@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { applyTheme } from "../utils/theme";
@@ -7,14 +7,15 @@ import Navbar from "../components/common/Navbar";
 import DataTable from "../components/common/DataTable";
 import { FaSearch, FaChevronDown, FaUpload } from "react-icons/fa";
 import SideModal from "../components/common/SideModal";
-// import { useApi } from "../hooks/useApi";
-// import { message } from "antd";
+import { useApi } from "../hooks/useApi";
+import { message } from "antd";
 
 const CategoryManagement = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   //   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [categories, setCategories] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -28,89 +29,27 @@ const CategoryManagement = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     categoryName: "",
-    subCategoryName: "",
-    subSubCategoryName: "",
+    description: "",
     status: "",
     categoryIcon: null,
   });
-  //   const { getCategories, createCategory, updateCategory, deleteCategory } = useApi();
+  const fileInputRef = useRef(null);
+  const { getCategories, uploadFile, createCategory, updateCategory, deleteCategory } = useApi();
   const mode = useSelector((state) => state.theme.mode);
+
 
   // Define tabs inside component to access translation function
   const tabs = [t("tabs.all"), t("tabs.active"), t("tabs.inactive")];
 
-  //   Use dummy data for development
-  const categoriesData = useMemo(
-    () => [
-      {
-        _id: "1",
-        categoryName: "Home Services",
-        subCategoryName: "Cleaning",
-        subSubCategoryName: "House Cleaning",
-        totalProviders: 25,
-        totalOrders: 150,
-        lastUpdated: "2024-01-15T10:30:00Z",
-        status: "active",
-        categoryIcon: null,
-      },
-      {
-        _id: "2",
-        categoryName: "Home Services",
-        subCategoryName: "Repair",
-        subSubCategoryName: "Plumbing",
-        totalProviders: 18,
-        totalOrders: 89,
-        lastUpdated: "2024-01-10T14:20:00Z",
-        status: "inactive",
-        categoryIcon: null,
-      },
-      {
-        _id: "3",
-        categoryName: "Kitchen Services",
-        subCategoryName: "Cooking",
-        subSubCategoryName: "Meal Preparation",
-        totalProviders: 10,
-        totalOrders: 100,
-        lastUpdated: "2024-01-20T09:15:00Z",
-        status: "active",
-        categoryIcon: null,
-      },
-      {
-        _id: "4",
-        categoryName: "Beauty & Wellness",
-        subCategoryName: "Hair Care",
-        subSubCategoryName: "Hair Styling",
-        totalProviders: 32,
-        totalOrders: 234,
-        lastUpdated: "2024-01-20T09:15:00Z",
-        status: "inactive",
-        categoryIcon: null,
-      },
-    ],
-    []
-  );
+
 
   // Define columns inside component to access translation function
   const columns = [
     {
-      key: "categoryName",
+      key: "name",
       title: t("table.categoryName"),
       render: (val) => (
         <span className="text-text-tablebody font-semibold">{val}</span>
-      ),
-    },
-    {
-      key: "subCategoryName",
-      title: t("table.subCategory"),
-      render: (val) => (
-        <span className="text-text-tablebody">{val || "N/A"}</span>
-      ),
-    },
-    {
-      key: "subSubCategoryName",
-      title: t("table.sub_to_subCategory"),
-      render: (val) => (
-        <span className="text-text-tablebody">{val || "N/A"}</span>
       ),
     },
     {
@@ -124,7 +63,7 @@ const CategoryManagement = () => {
       render: (val) => <span className="text-text-tablebody">{val || 0}</span>,
     },
     {
-      key: "lastUpdated",
+      key: "updatedAt",
       title: t("table.lastUpdated"),
       render: (val) => (
         <span className="text-text-tablebody">
@@ -133,21 +72,21 @@ const CategoryManagement = () => {
       ),
     },
     {
-      key: "status",
+      key: "isActive",
       title: t("table.status"),
       render: (val) => (
         <span
           className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-            val === "active"
+            val === true
               ? "bg-[#55CE631A] text-[#55CE63]"
-              : val === "inactive"
+              : val === false
               ? "bg-[#FFBC341A] text-[#FFBC34]"
               : "bg-gray-200 text-gray-600"
           }`}
         >
-          {val === "active"
+          {val === true
             ? "Active"
-            : val === "inactive"
+            : val === false
             ? "Inactive"
             : "Unknown"}
         </span>
@@ -203,116 +142,236 @@ const CategoryManagement = () => {
   //     fetchCategories();
   //   }, [pagination.currentPage, pagination.itemsPerPage, getCategories]);
 
-  // Set dummy data on component mount
+  // Fetch categories on component mount and when pagination changes
   useEffect(() => {
-    setCategories(categoriesData);
-    setPagination((prev) => ({
-      ...prev,
-      totalPages: Math.ceil(categoriesData.length / pagination.itemsPerPage),
-      totalItems: categoriesData.length,
-    }));
-  }, [categoriesData, pagination.itemsPerPage]);
+    const fetchCategories = async () => {
+      try {
+        const response = await getCategories(pagination.currentPage, pagination.itemsPerPage, 0, true);
+
+        console.log('Categories API response:', response);
+
+        if (response.data && Array.isArray(response.data)) {
+          console.log('Setting categories to:', response.data);
+          setCategories(response.data);
+          setPagination(prev => ({
+            ...prev,
+            totalPages: response.meta?.totalPages || 1,
+            totalItems: response.meta?.total || 0,
+          }));
+        } else {
+          message.error("Failed to fetch categories");
+        }
+      } catch (error) {
+        message.error("Error fetching categories");
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, [pagination.currentPage, pagination.itemsPerPage, getCategories]);
 
   // Handler for opening modal with row data
   const handleEdit = (row) => {
-    // setSelectedCategory(row);
+    console.log('=== EDIT CATEGORY STARTED ===');
+    console.log('Row data:', row);
+    console.log('Row name:', row.name);
+    console.log('Row description:', row.description);
+    console.log('Row imageUrl:', row.imageUrl);
+    
+    setSelectedCategory(row);
     setFormData({
-      categoryName: row.categoryName || "",
-      subCategoryName: row.subCategoryName || "",
-      subSubCategoryName: row.subSubCategoryName || "",
-      status: row.status || "",
-      categoryIcon: row.categoryIcon,
+      categoryName: row.name || row.categoryName || "",
+      description: row.description || "",
+      status: row.isActive ? "active" : "inactive",
+      categoryIcon: row.imageUrl,
     });
+    
+    console.log('Form data after setFormData:', {
+      categoryName: row.name || row.categoryName || "",
+      description: row.description || "",
+      status: row.isActive ? "active" : "inactive",
+      categoryIcon: row.imageUrl,
+    });
+    
     setIsEditing(true);
     setModalOpen(true);
   };
 
   // Handler for deleting a category
-  //   const handleDelete = async (categoryId) => {
-  //     try {
-  //       const response = await deleteCategory(categoryId);
+  const handleDelete = async (categoryId) => {
+    try {
+      const response = await deleteCategory(categoryId);
 
-  //       if (response.success) {
-  //         message.success("Category deleted successfully!");
+      if (response.success) {
+        message.success("Category deleted successfully!");
 
-  //         // Remove the category from the categories array
-  //         setCategories((prevCategories) =>
-  //           prevCategories.filter((category) => category._id !== categoryId)
-  //         );
-  //       } else {
-  //         message.error(response.message || "Failed to delete category");
-  //       }
-  //     } catch (error) {
-  //       message.error("Error deleting category");
-  //       console.error("Error deleting category:", error);
-  //     }
-  //   };
+        // Remove the category from the categories array
+        setCategories((prevCategories) =>
+          prevCategories.filter((category) => category._id !== categoryId)
+        );
+      } else {
+        message.error(response.message || "Failed to delete category");
+      }
+    } catch (error) {
+      message.error("Error deleting category");
+      console.error("Error deleting category:", error);
+    }
+  };
 
   // Handler for saving category (create or update)
-  //   const handleSaveCategory = async () => {
-  //     try {
-  //       let response;
+  const handleSaveCategory = async () => {
+    try {
+      // Validate required fields
+      if (!formData.categoryName.trim()) {
+        message.error("Category name is required");
+        return;
+      }
+      if (!formData.description.trim()) {
+        message.error("Description is required");
+        return;
+      }
+      if (!formData.categoryIcon) {
+        message.error("Category icon is required");
+        return;
+      }
 
-  //       if (isEditing && selectedCategory) {
-  //         response = await updateCategory(selectedCategory._id, formData);
-  //         if (response.success) {
-  //           message.success("Category updated successfully!");
+      let response;
 
-  //           // Update the category in the categories array
-  //           setCategories((prevCategories) =>
-  //             prevCategories.map((category) =>
-  //               category._id === selectedCategory._id
-  //                 ? { ...category, ...formData }
-  //                 : category
-  //             )
-  //           );
-  //         }
-  //       } else {
-  //         response = await createCategory(formData);
-  //         if (response.success) {
-  //           message.success("Category created successfully!");
+      if (isEditing && selectedCategory) {
+        // Update existing category
+        const categoryData = {
+          name: formData.categoryName.trim(),
+          description: formData.description.trim(),
+          imageUrl: formData.categoryIcon,
+        };
 
-  //           // Add the new category to the categories array
-  //           const newCategory = {
-  //             _id: response.data?._id || Date.now().toString(),
-  //             ...formData,
-  //           };
-  //           setCategories((prevCategories) => [newCategory, ...prevCategories]);
-  //         }
-  //       }
+        response = await updateCategory(selectedCategory._id, categoryData);
+        
+        if (response.success || response.data) {
+          message.success("Category updated successfully!");
 
-  //       if (response.success) {
-  //         setModalOpen(false);
-  //         setSelectedCategory(null);
-  //         setIsEditing(false);
-  //         setFormData({
-  //           categoryName: "",
-  //           subCategoryName: "",
-  //           subSubCategoryName: "",
-  //           status: "",
-  //           categoryIcon: null,
-  //         });
-  //       } else {
-  //         message.error(response.message || "Failed to save category");
-  //       }
-  //     } catch (error) {
-  //       message.error("Error saving category");
-  //       console.error("Error saving category:", error);
-  //     }
-  //   };
+          // Update the category in the categories array
+          setCategories((prevCategories) =>
+            prevCategories.map((category) =>
+              category._id === selectedCategory._id
+                ? { ...category, ...categoryData }
+                : category
+            )
+          );
+        }
+      } else {
+        // Create new category
+        const categoryData = {
+          name: formData.categoryName.trim(),
+          description: formData.description.trim(),
+          imageUrl: formData.categoryIcon,
+        };
+
+        response = await createCategory(categoryData);
+        
+        if (response.success || response.data) {
+          message.success("Category created successfully!");
+
+          // Add the new category to the categories array
+          const newCategory = {
+            _id: response.data?._id || response._id || Date.now().toString(),
+            name: formData.categoryName,
+            description: formData.description,
+            imageUrl: formData.categoryIcon,
+            isActive: true,
+            createdAt: new Date().toISOString(),
+          };
+          setCategories((prevCategories) => [newCategory, ...prevCategories]);
+        }
+      }
+
+      if (response && !response?.message) {
+        setModalOpen(false);
+        setIsEditing(false);
+        setSelectedCategory(null);
+        setFormData({
+          categoryName: "",
+          description: "",
+          status: "",
+          categoryIcon: null,
+        });
+        // Refresh the categories list
+        const fetchCategories = async () => {
+          try {
+            const response = await getCategories(pagination.currentPage, pagination.itemsPerPage, 0, true);
+            if (response.data && Array.isArray(response.data)) {
+              setCategories(response.data);
+            }
+          } catch (error) {
+            console.error("Error refreshing categories:", error);
+          }
+        };
+        fetchCategories();
+      } else {
+        message.error(response?.message || "Failed to save category");
+      }
+    } catch (error) {
+      message.error("Error saving category");
+      console.error("Error saving category:", error);
+    }
+  };
 
   // Handler for opening add new category modal
   const handleAddNew = () => {
-    // setSelectedCategory(null);
+    setSelectedCategory(null);
     setIsEditing(false);
     setFormData({
       categoryName: "",
-      subCategoryName: "",
-      subSubCategoryName: "",
+      description: "",
       status: "",
       categoryIcon: null,
     });
     setModalOpen(true);
+  };
+
+  const handleImageSelect = async (event) => {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    
+    // Accept only image files
+    if (!file.type.startsWith("image/")) {
+      message.error("Please select an image file");
+      return;
+    }
+
+    try {
+      // Show loading message
+      message.loading("Uploading image...", 0);
+      
+      // Upload the file
+      const response = await uploadFile(file);
+      
+      // Hide loading message
+      message.destroy();
+      
+      if (response.success || response.data) {
+        // Get the URL from response
+        const imageUrl = response.file?.fileUrl || response.url || response.data;
+        
+        // Update form data with the uploaded image URL
+        setFormData((prev) => ({ 
+          ...prev, 
+          categoryIcon: imageUrl,
+          uploadedFile: file // Keep reference to original file for display
+        }));
+        
+        message.success("Image uploaded successfully!");
+        console.log('Upload response:', response);
+        console.log('Image URL:', imageUrl);
+      } else {
+        message.error("Failed to upload image");
+        console.error('Upload failed:', response);
+      }
+    } catch (error) {
+      message.destroy();
+      message.error("Error uploading image");
+      console.error("Error uploading image:", error);
+    }
   };
 
   // Pagination handlers
@@ -361,7 +420,7 @@ const CategoryManagement = () => {
         switch (searchOption) {
           case "name":
             return (
-              category.categoryName?.toLowerCase().includes(searchValue) ||
+              category.name?.toLowerCase().includes(searchValue) ||
               false
             );
           case "subCategory":
@@ -371,11 +430,11 @@ const CategoryManagement = () => {
             );
           case "status":
             return (
-              category.status?.toLowerCase().includes(searchValue) || false
+              (category.isActive ? "active" : "inactive")?.toLowerCase().includes(searchValue) || false
             );
           default:
             return (
-              category.categoryName?.toLowerCase().includes(searchValue) ||
+              category.name?.toLowerCase().includes(searchValue) ||
               false ||
               category.subCategoryName?.toLowerCase().includes(searchValue) ||
               false
@@ -399,7 +458,7 @@ const CategoryManagement = () => {
             </button>
             <button
               className="text-red-600 hover:underline"
-              // onClick={() => handleDelete(row._id)}
+              onClick={() => handleDelete(row._id)}
             >
               {t("table.delete")}
             </button>
@@ -614,7 +673,7 @@ const CategoryManagement = () => {
           <div className="flex gap-4 items-center">
             <button
               className="w-full py-3 rounded-xl bg-accent text-white font-semibold text-lg"
-              // onClick={handleSaveCategory}
+              onClick={handleSaveCategory}
             >
               {isEditing
                 ? t("categoryDetail.update")
@@ -632,12 +691,32 @@ const CategoryManagement = () => {
         <div>
           {/* Category Icon Upload */}
           <div className="mb-6">
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-accent transition-colors">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageSelect}
+            />
+            <div
+              className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-accent transition-colors"
+              onClick={() => fileInputRef.current && fileInputRef.current.click()}
+            >
               <FaUpload className="mx-auto text-3xl text-gray-400 mb-2" />
               <p className="text-gray-600">{t("categoryDetail.upload")}</p>
               <p className="text-sm text-gray-500 mt-1">
                 {t("categoryDetail.uploadTagline")}
               </p>
+              {formData.uploadedFile && (
+                <p className="text-xs text-gray-500 mt-2 truncate">
+                  {formData.uploadedFile.name}
+                </p>
+              )}
+              {formData.categoryIcon && !formData.uploadedFile && (
+                <p className="text-xs text-green-500 mt-2">
+                  ✓ Image uploaded
+                </p>
+              )}
             </div>
           </div>
 
@@ -664,58 +743,21 @@ const CategoryManagement = () => {
 
             <div>
               <label className="block text-sm font-medium text-text-primary mb-2">
-                {t("categoryDetail.subCategoryName")}{" "}
+                {t("categoryDetail.description")}{" "}
                 <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                placeholder="Enter Category Name"
-                value={formData.subCategoryName}
+                placeholder="Enter Description"
+                value={formData.description}
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
-                    subCategoryName: e.target.value,
+                    description: e.target.value,
                   }))
                 }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-text-primary mb-2">
-                {t("categoryDetail.sub_subCategoryName")}{" "}
-                <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Enter Category Name"
-                value={formData.subSubCategoryName}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    subSubCategoryName: e.target.value,
-                  }))
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-text-primary mb-2">
-                {t("categoryDetail.status")}{" "}
-                <span className="text-red-500">*</span>
-              </label>
-              <select
-                value={formData.status}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, status: e.target.value }))
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-              >
-                <option value="">{t("categoryDetail.chooseStatus")}</option>
-                <option value="active">{t("categoryDetail.active")}</option>
-                <option value="inactive">{t("categoryDetail.inActive")}</option>
-              </select>
             </div>
           </div>
         </div>

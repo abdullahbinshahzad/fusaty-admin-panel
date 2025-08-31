@@ -9,4 +9,16 @@ export const API_ENDPOINTS = {
     DEACTIVATE_USER: '/admin/deactivate-user',
     GET_PROVIDERS: '/admin/get-providers',
     APPROVE_PROVIDER: '/admin/approve-provider',
+    
+    UPLOAD_FILE: '/user/upload-file',
+    GET_CATEGORIES: '/category',
+    CREATE_CATEGORY: '/category',
+    CREATE_SUB_CATEGORY: '/category/{categoryId}/subcategory',
+    CREATE_SUB_TO_SUB_CATEGORY: '/category/{subCategoryId}/sub-subcategory',
+    UPDATE_CATEGORY: '/category/:id',
+    UPDATE_SUB_CATEGORY: '/category/:id',
+    UPDATE_SUB_TO_SUB_CATEGORY: '/category/:id',
+    DELETE_CATEGORY: '/category/:id',
+    DELETE_SUB_CATEGORY: '/category/:id',
+    DELETE_SUB_TO_SUB_CATEGORY: '/category/:id',
   };

@@ -30,8 +30,8 @@ const ThemeToggle = () => {
         }`}
       />
       <div
-        className={`absolute w-[19.5px] h-[19.5px] bg-white rounded-full shadow-ml transform transition-transform duration-300 ${
-          isLight ? "translate-x-[-1px]" : "translate-x-[20.5px]"
+        className={`absolute w-[19px] h-[19px] rounded-full shadow-ml transform transition-transform duration-300 ${
+          isLight ? "translate-x-[-0.5px]  bg-[#00A8FF] "  : "translate-x-[21px] bg-[#004975]"
         }`}
       ></div>
     </div>

@@ -115,6 +115,105 @@ export const useApi = () => {
     }
   }, [executeRequest]);
 
+  const getCategories = useCallback(async (page = 1, limit = 10, level = 0, isActive = true) => {
+    try {
+      const response = await executeRequest(apiService.getCategories, page, limit, level, isActive);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }, [executeRequest]);
+
+  const uploadFile = useCallback(async (file) => {
+    try {
+      const response = await executeRequest(apiService.uploadFile, file);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }, [executeRequest]);
+
+  const createCategory = useCallback(async (categoryData) => {
+    try {
+      const response = await executeRequest(apiService.createCategory, categoryData);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }, [executeRequest]);
+
+  const createSubCategory = useCallback(async (categoryId, subCategoryData) => {
+    try {
+      const response = await executeRequest(apiService.createSubCategory, categoryId, subCategoryData);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }, [executeRequest]);
+
+  const createSubToSubCategory = useCallback(async (subCategoryId, subToSubCategoryData) => {
+    try {
+      const response = await executeRequest(apiService.createSubToSubCategory, subCategoryId, subToSubCategoryData);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }, [executeRequest]);
+
+  const updateCategory = useCallback(async (id, categoryData) => {
+    try {
+      const response = await executeRequest(apiService.updateCategory, id, categoryData);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }, [executeRequest]);
+
+  const updateSubCategory = useCallback(async (id, subCategoryData) => {
+    try {
+      const response = await executeRequest(apiService.updateSubCategory, id, subCategoryData);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }, [executeRequest]);
+
+  const updateSubToSubCategory = useCallback(async (id, subToSubCategoryData) => {
+    try {
+      const response = await executeRequest(apiService.updateSubToSubCategory, id, subToSubCategoryData);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }, [executeRequest]);
+
+  const deleteCategory = useCallback(async (id) => {
+    try {
+      const response = await executeRequest(apiService.deleteCategory, id);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }, [executeRequest]);
+
+  const deleteSubCategory = useCallback(async (id) => {
+    try {
+      const response = await executeRequest(apiService.deleteSubCategory, id);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }, [executeRequest]);
+
+  const deleteSubToSubCategory = useCallback(async (id) => {
+    try {
+      const response = await executeRequest(apiService.deleteSubToSubCategory, id);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }, [executeRequest]);
+
   return {
     loading,
     error,
@@ -124,5 +223,16 @@ export const useApi = () => {
     updateUserTries,
     deactivateUser,
     approveProvider,
+    getCategories,
+    uploadFile,
+    createCategory,
+    createSubCategory,
+    createSubToSubCategory,
+    updateCategory,
+    updateSubCategory,
+    updateSubToSubCategory,
+    deleteCategory,
+    deleteSubCategory,
+    deleteSubToSubCategory,
   };
 }; 

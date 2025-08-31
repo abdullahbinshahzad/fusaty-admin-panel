@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { applyTheme } from "../utils/theme";
@@ -7,15 +7,17 @@ import Navbar from "../components/common/Navbar";
 import DataTable from "../components/common/DataTable";
 import { FaSearch, FaChevronDown, FaUpload } from "react-icons/fa";
 import SideModal from "../components/common/SideModal";
-// import { useApi } from "../hooks/useApi";
-// import { message } from "antd";
+import { useApi } from "../hooks/useApi";
+import { message, Select } from "antd";
 
 const SubToSubCategoryManagement = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   //   const [selectedSubSubCategory, setSelectedSubSubCategory] = useState(null);
+  const [selectedSubToSubCategory, setSelectedSubToSubCategory] = useState(null);
   const [subSubCategories, setSubSubCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
     totalPages: 1,
@@ -27,87 +29,23 @@ const SubToSubCategoryManagement = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    categoryName: "",
     subCategoryName: "",
     subSubCategoryName: "",
     status: "",
     subSubCategoryIcon: null,
+    description: "",
   });
-  //   const { getSubSubCategories, createSubSubCategory, updateSubSubCategory, deleteSubSubCategory } = useApi();
+  const fileInputRef = useRef(null);
+  const { getCategories, uploadFile, createSubToSubCategory, updateSubToSubCategory, deleteSubToSubCategory } = useApi();
   const mode = useSelector((state) => state.theme.mode);
 
   // Define tabs inside component to access translation function
   const tabs = [t("tabs.all"), t("tabs.active"), t("tabs.inactive")];
 
-  //   Use dummy data for development
-  const subSubCategoriesData = useMemo(
-    () => [
-      {
-        _id: "1",
-        categoryName: "Home Services",
-        subCategoryName: "Cleaning",
-        subSubCategoryName: "House Cleaning",
-        totalProviders: 25,
-        totalOrders: 150,
-        lastUpdated: "2024-01-15T10:30:00Z",
-        status: "active",
-        subSubCategoryIcon: null,
-      },
-      {
-        _id: "2",
-        categoryName: "Home Services",
-        subCategoryName: "Repair",
-        subSubCategoryName: "Plumbing",
-        totalProviders: 18,
-        totalOrders: 89,
-        lastUpdated: "2024-01-10T14:20:00Z",
-        status: "inactive",
-        subSubCategoryIcon: null,
-      },
-      {
-        _id: "3",
-        categoryName: "Kitchen Services",
-        subCategoryName: "Cooking",
-        subSubCategoryName: "Meal Preparation",
-        totalProviders: 10,
-        totalOrders: 100,
-        lastUpdated: "2024-01-20T09:15:00Z",
-        status: "active",
-        subSubCategoryIcon: null,
-      },
-      {
-        _id: "4",
-        categoryName: "Beauty & Wellness",
-        subCategoryName: "Hair Care",
-        subSubCategoryName: "Hair Styling",
-        totalProviders: 32,
-        totalOrders: 234,
-        lastUpdated: "2024-01-20T09:15:00Z",
-        status: "inactive",
-        subSubCategoryIcon: null,
-      },
-    ],
-    []
-  );
-
   // Define columns inside component to access translation function
   const columns = [
     {
-      key: "categoryName",
-      title: t("table.categoryName"),
-      render: (val) => (
-        <span className="text-text-tablebody font-semibold">{val}</span>
-      ),
-    },
-    {
-      key: "subCategoryName",
-      title: t("table.subCategory"),
-      render: (val) => (
-        <span className="text-text-tablebody">{val || "N/A"}</span>
-      ),
-    },
-    {
-      key: "subSubCategoryName",
+      key: "name",
       title: t("table.sub_to_subCategory"),
       render: (val) => (
         <span className="text-text-tablebody">{val || "N/A"}</span>
@@ -124,7 +62,7 @@ const SubToSubCategoryManagement = () => {
       render: (val) => <span className="text-text-tablebody">{val || 0}</span>,
     },
     {
-      key: "lastUpdated",
+      key: "updatedAt",
       title: t("table.lastUpdated"),
       render: (val) => (
         <span className="text-text-tablebody">
@@ -133,21 +71,21 @@ const SubToSubCategoryManagement = () => {
       ),
     },
     {
-      key: "status",
+      key: "isActive",
       title: t("table.status"),
       render: (val) => (
         <span
           className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-            val === "active"
+            val === true
               ? "bg-[#55CE631A] text-[#55CE63]"
-              : val === "inactive"
+              : val === false
               ? "bg-[#FFBC341A] text-[#FFBC34]"
               : "bg-gray-200 text-gray-600"
           }`}
         >
-          {val === "active"
+          {val === true
             ? "Active"
-            : val === "inactive"
+            : val === false
             ? "Inactive"
             : "Unknown"}
         </span>
@@ -163,147 +101,224 @@ const SubToSubCategoryManagement = () => {
     applyTheme(mode);
   }, [mode]);
 
-  // Fetch subSubCategories on component mount and when pagination changes
-  //   useEffect(() => {
-  //     const fetchSubSubCategories = async () => {
-  //       try {
-  //         const response = await getSubSubCategories(pagination.currentPage, pagination.itemsPerPage);
-
-  //         console.log('SubSubCategories API response:', response);
-
-  //         if (response.success) {
-  //           // Handle the actual API response structure
-  //           let subSubCategoriesData = [];
-  //           if (response.data && response.data.docs && Array.isArray(response.data.docs)) {
-  //             subSubCategoriesData = response.data.docs;
-  //           } else if (Array.isArray(response.data)) {
-  //             subSubCategoriesData = response.data;
-  //           } else if (Array.isArray(response.result)) {
-  //             subSubCategoriesData = response.result;
-  //           } else {
-  //             console.warn('No valid subSubCategories array found in response:', response);
-  //           }
-
-  //           console.log('Setting subSubCategories to:', subSubCategoriesData);
-  //           setSubSubCategories(subSubCategoriesData);
-  //           setPagination(prev => ({
-  //             ...prev,
-  //             totalPages: response.data?.totalPages || 1,
-  //             totalItems: response.data?.totalDocs || subSubCategoriesData.length,
-  //           }));
-  //         } else {
-  //           message.error(response.message || "Failed to fetch subSubCategories");
-  //         }
-  //       } catch (error) {
-  //         message.error("Error fetching subSubCategories");
-  //         console.error("Error fetching subSubCategories:", error);
-  //       }
-  //     };
-
-  //     fetchSubSubCategories();
-  //   }, [pagination.currentPage, pagination.itemsPerPage, getSubSubCategories]);
-
-  // Set dummy data on component mount
+  // Fetch categories for dropdown
   useEffect(() => {
-    setSubSubCategories(subSubCategoriesData);
-    setPagination((prev) => ({
-      ...prev,
-      totalPages: Math.ceil(subSubCategoriesData.length / pagination.itemsPerPage),
-      totalItems: subSubCategoriesData.length,
-    }));
-  }, [subSubCategoriesData, pagination.itemsPerPage]);
+    const fetchCategories = async () => {
+      try {
+        const response = await getCategories(1, 100, 1, true); // Get all sub-categories
+        if (response.data && Array.isArray(response.data)) {
+          setCategories(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching categories for dropdown:", error);
+      }
+    };
+
+    fetchCategories();
+  }, [getCategories]);
+
+  // Fetch subSubCategories on component mount and when pagination changes
+  useEffect(() => {
+    const fetchSubSubCategories = async () => {
+      try {
+        const response = await getCategories(pagination.currentPage, pagination.itemsPerPage, 2, true);
+
+        console.log('SubSubCategories API response:', response);
+
+        if (response.data && Array.isArray(response.data)) {
+          console.log('Setting subSubCategories to:', response.data);
+          setSubSubCategories(response.data);
+          setPagination(prev => ({
+            ...prev,
+            totalPages: response.meta?.totalPages || 1,
+            totalItems: response.meta?.total || 0,
+          }));
+        } else {
+          message.error("Failed to fetch subSubCategories");
+        }
+      } catch (error) {
+        message.error("Error fetching subSubCategories");
+        console.error("Error fetching subSubCategories:", error);
+      }
+    };
+
+    fetchSubSubCategories();
+  }, [pagination.currentPage, pagination.itemsPerPage, getCategories]);
+
+  // Handler for deleting a subToSubCategory
+  const handleDelete = async (subToSubCategoryId) => {
+    try {
+      const response = await deleteSubToSubCategory(subToSubCategoryId);
+
+      if (response.success) {
+        message.success("Sub-to-sub-category deleted successfully!");
+
+        // Remove the sub-to-sub-category from the subSubCategories array
+        setSubSubCategories((prevSubSubCategories) =>
+          prevSubSubCategories.filter((subToSubCategory) => subToSubCategory._id !== subToSubCategoryId)
+        );
+      } else {
+        message.error(response.message || "Failed to delete sub-to-sub-category");
+      }
+    } catch (error) {
+      message.error("Error deleting sub-to-sub-category");
+      console.error("Error deleting sub-to-sub-category:", error);
+    }
+  };
 
   // Handler for opening modal with row data
   const handleEdit = (row) => {
-    // setSelectedSubSubCategory(row);
+    console.log('=== EDIT SUB-TO-SUB-CATEGORY STARTED ===');
+    console.log('Row data:', row);
+    console.log('Row parent:', row.parent);
+    console.log('Available sub-categories:', categories);
+    
+    // Find the sub-category name using the parent ID
+    const parentSubCategory = categories.find(cat => cat._id === row.parent);
+    const subCategoryName = parentSubCategory ? parentSubCategory.name : "";
+    
+    console.log('Parent sub-category found:', parentSubCategory);
+    console.log('Sub-category name to set:', subCategoryName);
+    
+    setSelectedSubToSubCategory(row);
     setFormData({
       categoryName: row.categoryName || "",
-      subCategoryName: row.subCategoryName || "",
-      subSubCategoryName: row.subSubCategoryName || "",
-      status: row.status || "",
-      subSubCategoryIcon: row.subSubCategoryIcon,
+      subCategoryName: subCategoryName,
+      subSubCategoryName: row.name || row.subSubCategoryName || "",
+      description: row.description || "",
+      status: row.isActive ? "active" : "inactive",
+      subSubCategoryIcon: row.imageUrl,
     });
+    
+    console.log('Form data after setFormData:', {
+      categoryName: row.categoryName || "",
+      subCategoryName: subCategoryName,
+      subSubCategoryName: row.name || row.subSubCategoryName || "",
+      description: row.description || "",
+      status: row.isActive ? "active" : "inactive",
+      subSubCategoryIcon: row.imageUrl,
+    });
+    
     setIsEditing(true);
     setModalOpen(true);
   };
 
-  // Handler for deleting a subSubCategory
-  //   const handleDelete = async (subSubCategoryId) => {
-  //     try {
-  //       const response = await deleteSubSubCategory(subSubCategoryId);
+  // Handler for saving subToSubCategory (create or update)
+  const handleSaveSubToSubCategory = async () => {
+    try {
+      // Validate required fields
+      if (!formData.subCategoryName) {
+        message.error("Please select a sub-category");
+        return;
+      }
+      if (!formData.subSubCategoryName.trim()) {
+        message.error("Sub-to-sub-category name is required");
+        return;
+      }
+      if (!formData.description.trim()) {
+        message.error("Description is required");
+        return;
+      }
+      if (!formData.subSubCategoryIcon) {
+        message.error("Sub-to-sub-category icon is required");
+        return;
+      }
 
-  //       if (response.success) {
-  //         message.success("SubSubCategory deleted successfully!");
+      let response;
 
-  //         // Remove the subSubCategory from the subSubCategories array
-  //         setSubSubCategories((prevSubSubCategories) =>
-  //           prevSubSubCategories.filter((subSubCategory) => subSubCategory._id !== subSubCategoryId)
-  //         );
-  //       } else {
-  //         message.error(response.message || "Failed to delete subSubCategory");
-  //       }
-  //     } catch (error) {
-  //       message.error("Error deleting subSubCategory");
-  //       console.error("Error deleting subSubCategory:", error);
-  //     }
-  //   };
+      if (isEditing && selectedSubToSubCategory) {
+        // Update existing sub-to-sub-category
+        const subToSubCategoryData = {
+          name: formData.subSubCategoryName.trim(),
+          description: formData.description.trim(),
+          imageUrl: formData.subSubCategoryIcon,
+        };
 
-  // Handler for saving subSubCategory (create or update)
-  //   const handleSaveSubSubCategory = async () => {
-  //     try {
-  //       let response;
+        response = await updateSubToSubCategory(selectedSubToSubCategory._id, subToSubCategoryData);
+        
+        if (response.success || response.data) {
+          message.success("Sub-to-sub-category updated successfully!");
 
-  //       if (isEditing && selectedSubSubCategory) {
-  //         response = await updateSubSubCategory(selectedSubSubCategory._id, formData);
-  //         if (response.success) {
-  //           message.success("SubSubCategory updated successfully!");
+          // Update the sub-to-sub-category in the subSubCategories array
+          setSubSubCategories((prevSubSubCategories) =>
+            prevSubSubCategories.map((subToSubCategory) =>
+              subToSubCategory._id === selectedSubToSubCategory._id
+                ? { ...subToSubCategory, ...subToSubCategoryData }
+                : subToSubCategory
+            )
+          );
+        }
+      } else {
+        // Find the selected sub-category to get its ID
+        const selectedSubCategory = categories.find(cat => cat.name === formData.subCategoryName);
+        if (!selectedSubCategory) {
+          message.error("Selected sub-category not found");
+          return;
+        }
 
-  //           // Update the subSubCategory in the subSubCategories array
-  //           setSubSubCategories((prevSubSubCategories) =>
-  //             prevSubSubCategories.map((subSubCategory) =>
-  //               subSubCategory._id === selectedSubSubCategory._id
-  //                 ? { ...subSubCategory, ...formData }
-  //                 : subSubCategory
-  //             )
-  //           );
-  //         }
-  //       } else {
-  //         response = await createSubSubCategory(formData);
-  //         if (response.success) {
-  //           message.success("SubSubCategory created successfully!");
+        // Create new sub-to-sub-category
+        const subToSubCategoryData = {
+          name: formData.subSubCategoryName.trim(),
+          description: formData.description.trim(),
+          imageUrl: formData.subSubCategoryIcon,
+        };
 
-  //           // Add the new subSubCategory to the subSubCategories array
-  //           const newSubSubCategory = {
-  //             _id: response.data?._id || Date.now().toString(),
-  //             ...formData,
-  //           };
-  //           setSubSubCategories((prevSubSubCategories) => [newSubSubCategory, ...prevSubSubCategories]);
-  //         }
-  //       }
+        response = await createSubToSubCategory(selectedSubCategory._id, subToSubCategoryData);
+        
+        if (response.success || response.data) {
+          message.success("Sub-to-sub-category created successfully!");
 
-  //       if (response.success) {
-  //         setModalOpen(false);
-  //         setSelectedSubSubCategory(null);
-  //         setIsEditing(false);
-  //         setFormData({
-  //           categoryName: "",
-  //           subCategoryName: "",
-  //           subSubCategoryName: "",
-  //           status: "",
-  //           subSubCategoryIcon: null,
-  //         });
-  //       } else {
-  //         message.error(response.message || "Failed to save subSubCategory");
-  //       }
-  //     } catch (error) {
-  //       message.error("Error saving subSubCategory");
-  //       console.error("Error saving subSubCategory:", error);
-  //     }
-  //   };
+          // Add the new sub-to-sub-category to the subSubCategories array
+          const newSubToSubCategory = {
+            _id: response.data?._id || response._id || Date.now().toString(),
+            name: formData.subSubCategoryName,
+            description: formData.description,
+            imageUrl: formData.subSubCategoryIcon,
+            subCategoryName: formData.subCategoryName,
+            isActive: true,
+            createdAt: new Date().toISOString(),
+          };
+          setSubSubCategories((prevSubSubCategories) => [newSubToSubCategory, ...prevSubSubCategories]);
+        }
+      }
+
+      if (response && !response?.message) {
+        setModalOpen(false);
+        setIsEditing(false);
+        setSelectedSubToSubCategory(null);
+        setFormData({
+          categoryName: "",
+          subCategoryName: "",
+          subSubCategoryName: "",
+          status: "",
+          subSubCategoryIcon: null,
+          description: "",
+        });
+        // Refresh the sub-to-sub-categories list
+        const fetchSubSubCategories = async () => {
+          try {
+            const response = await getCategories(pagination.currentPage, pagination.itemsPerPage, 2, true);
+            if (response.data && Array.isArray(response.data)) {
+              setSubSubCategories(response.data);
+            }
+          } catch (error) {
+            console.error("Error refreshing sub-to-sub-categories:", error);
+          }
+        };
+        fetchSubSubCategories();
+      } else {
+        message.error(response?.message || "Failed to save sub-to-sub-category");
+      }
+    } catch (error) {
+      message.error("Error saving sub-to-sub-category");
+      console.error("Error saving sub-to-sub-category:", error);
+    }
+  };
 
   // Handler for opening add new subSubCategory modal
   const handleAddNew = () => {
     // setSelectedSubSubCategory(null);
+    setSelectedSubToSubCategory(null);
     setIsEditing(false);
     setFormData({
       categoryName: "",
@@ -311,8 +326,54 @@ const SubToSubCategoryManagement = () => {
       subSubCategoryName: "",
       status: "",
       subSubCategoryIcon: null,
+      description: "",
     });
     setModalOpen(true);
+  };
+
+  const handleImageSelect = async (event) => {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    
+    // Accept only image files
+    if (!file.type.startsWith("image/")) {
+      message.error("Please select an image file");
+      return;
+    }
+
+    try {
+      // Show loading message
+      message.loading("Uploading image...", 0);
+      
+      // Upload the file
+      const response = await uploadFile(file);
+      
+      // Hide loading message
+      message.destroy();
+      
+      if (response.success || response.data) {
+        // Get the URL from response
+        const imageUrl = response.file?.fileUrl || response.url || response.data;
+        
+        // Update form data with the uploaded image URL
+        setFormData((prev) => ({ 
+          ...prev, 
+          subSubCategoryIcon: imageUrl,
+          uploadedFile: file // Keep reference to original file for display
+        }));
+        
+        message.success("Image uploaded successfully!");
+        console.log('Upload response:', response);
+        console.log('Image URL:', imageUrl);
+      } else {
+        message.error("Failed to upload image");
+        console.error('Upload failed:', response);
+      }
+    } catch (error) {
+      message.destroy();
+      message.error("Error uploading image");
+      console.error("Error uploading image:", error);
+    }
   };
 
   // Pagination handlers
@@ -361,7 +422,7 @@ const SubToSubCategoryManagement = () => {
         switch (searchOption) {
           case "name":
             return (
-              subSubCategory.categoryName?.toLowerCase().includes(searchValue) ||
+              subSubCategory.name?.toLowerCase().includes(searchValue) ||
               false
             );
           case "subCategory":
@@ -371,11 +432,11 @@ const SubToSubCategoryManagement = () => {
             );
           case "status":
             return (
-              subSubCategory.status?.toLowerCase().includes(searchValue) || false
+              (subSubCategory.isActive ? "active" : "inactive")?.toLowerCase().includes(searchValue) || false
             );
           default:
             return (
-              subSubCategory.categoryName?.toLowerCase().includes(searchValue) ||
+              subSubCategory.name?.toLowerCase().includes(searchValue) ||
               false ||
               subSubCategory.subCategoryName?.toLowerCase().includes(searchValue) ||
               false
@@ -399,7 +460,7 @@ const SubToSubCategoryManagement = () => {
             </button>
             <button
               className="text-red-600 hover:underline"
-              // onClick={() => handleDelete(row._id)}
+              onClick={() => handleDelete(row._id)}
             >
               {t("table.delete")}
             </button>
@@ -614,7 +675,7 @@ const SubToSubCategoryManagement = () => {
           <div className="flex gap-4 items-center">
             <button
               className="w-full py-3 rounded-xl bg-accent text-white font-semibold text-lg"
-              // onClick={handleSaveSubSubCategory}
+              onClick={handleSaveSubToSubCategory}
             >
               {isEditing
                 ? t("subToSubCategoryDetail.update")
@@ -632,12 +693,32 @@ const SubToSubCategoryManagement = () => {
         <div>
           {/* SubSubCategory Icon Upload */}
           <div className="mb-6">
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-accent transition-colors">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageSelect}
+            />
+            <div
+              className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-accent transition-colors"
+              onClick={() => fileInputRef.current && fileInputRef.current.click()}
+            >
               <FaUpload className="mx-auto text-3xl text-gray-400 mb-2" />
               <p className="text-gray-600">{t("subToSubCategoryDetail.upload")}</p>
               <p className="text-sm text-gray-500 mt-1">
                 {t("subToSubCategoryDetail.uploadTagline")}
               </p>
+              {formData.uploadedFile && (
+                <p className="text-xs text-gray-500 mt-2 truncate">
+                  {formData.uploadedFile.name}
+                </p>
+              )}
+              {formData.subSubCategoryIcon && !formData.uploadedFile && (
+                <p className="text-xs text-green-500 mt-2">
+                  ✓ Image uploaded
+                </p>
+              )}
             </div>
           </div>
 
@@ -645,40 +726,36 @@ const SubToSubCategoryManagement = () => {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-text-primary mb-2">
-                {t("subToSubCategoryDetail.categoryName")}{" "}
-                <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Enter Category Name"
-                value={formData.categoryName}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    categoryName: e.target.value,
-                  }))
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-text-primary mb-2">
                 {t("subToSubCategoryDetail.subCategoryName")}{" "}
                 <span className="text-red-500">*</span>
               </label>
-              <input
-                type="text"
-                placeholder="Enter SubCategory Name"
-                value={formData.subCategoryName}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    subCategoryName: e.target.value,
-                  }))
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-              />
+              <div className="relative">
+                <Select
+                  value={formData.subCategoryName || undefined}
+                  onChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      subCategoryName: value,
+                    }))
+                  }
+                  placeholder="Choose Sub-Category"
+                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                  disabled={isEditing}
+                >
+                  {categories.map((category) => (
+                    <Select.Option key={category._id} value={category.name}>
+                      {category.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+                {isEditing && (
+                  <div className="absolute inset-0 bg-gray-100 bg-opacity-50 cursor-not-allowed rounded-lg flex items-center justify-center">
+                    <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded shadow-lg">
+                      To change sub-category, delete this item and create new
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div>
@@ -700,22 +777,25 @@ const SubToSubCategoryManagement = () => {
               />
             </div>
 
+            
+
             <div>
               <label className="block text-sm font-medium text-text-primary mb-2">
-                {t("subToSubCategoryDetail.status")}{" "}
+                {t("subToSubCategoryDetail.description")}{" "}
                 <span className="text-red-500">*</span>
               </label>
-              <select
-                value={formData.status}
+              <input
+                type="text"
+                placeholder="Enter Description"
+                value={formData.description}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, status: e.target.value }))
+                  setFormData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
                 }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-              >
-                <option value="">{t("subToSubCategoryDetail.chooseStatus")}</option>
-                <option value="active">{t("subToSubCategoryDetail.active")}</option>
-                <option value="inactive">{t("subToSubCategoryDetail.inActive")}</option>
-              </select>
+              />
             </div>
           </div>
         </div>
