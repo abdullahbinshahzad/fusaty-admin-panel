@@ -60,8 +60,13 @@ const DataTable = ({ columns, data }) => {
       <table className="min-w-full text-left">
         <thead>
           <tr className="bg-background-thead text-text-tablehead text-sm font-semibold border-y border-[#B4B4B4]">
-            {columns.map((col) => (
-              <th key={col.key} className="px-6 py-3">{col.title}</th>
+            {columns.map((col, index) => (
+              <th 
+                key={col.key} 
+                className={`px-6 py-3 ${index === columns.length - 1 ? 'text-center' : ''}`}
+              >
+                {col.title}
+              </th>
             ))}
           </tr>
         </thead>

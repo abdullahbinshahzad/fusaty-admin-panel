@@ -28,14 +28,14 @@ const LanguageToggle = () => {
 
       {/* Label E */}
       <span
-        className={`absolute font-bold text-[12px] transition-all duration-300 top-1/2 -translate-y-1/2 left-[9px] ${isEnglish ? 'text-white' : 'text-[#4D1D76]'}`}
+        className={`absolute text-[12px] transition-all duration-300 top-1/2 -translate-y-1/2 left-[9px] ${isEnglish ? 'text-white' : 'text-[#4D1D76]'}`}
       >
         E
       </span>
 
       {/* Label ع */}
       <span
-        className={`absolute font-bold text-[12px] transition-all duration-300 top-1/2 -translate-y-1/2 left-[29.5px] -mt-[3.25px] ${isEnglish ? 'text-[#4D1D76]' : 'text-white'}`}
+        className={`absolute text-[12px] transition-all duration-300 top-1/2 -translate-y-1/2 left-[29.5px] -mt-[3.25px] ${isEnglish ? 'text-[#4D1D76]' : 'text-white'}`}
       >
         ع
       </span>

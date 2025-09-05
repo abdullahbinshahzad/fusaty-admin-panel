@@ -142,7 +142,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-7">
         <div className="flex items-center justify-between">
           <h4 className="font-bold text-text-primary">
             {t("dashboard.orderStatus")}
@@ -158,12 +158,11 @@ const Dashboard = () => {
                 {t("dashboard.completed")}
               </span>
             </div>
-            <div className="w-full bg-input-bg rounded-full h-5">
+            
               <div
                 className="bg-[#55CE63] h-5 rounded-full"
                 style={{ width: "100%" }}
               ></div>
-            </div>
             <span className="text-sm font-medium text-text-primary">
               {dashboardData.orderStatus.completed}
             </span>
@@ -177,12 +176,11 @@ const Dashboard = () => {
                 {t("dashboard.pending")}
               </span>
             </div>
-            <div className="w-full bg-input-bg rounded-full h-5">
+          
               <div
                 className="bg-[#FFBC34] h-5 rounded-full"
                 style={{ width: "40%" }}
               ></div>
-            </div>
             <span className="text-sm font-medium text-text-primary">
               {dashboardData.orderStatus.pending}
             </span>
@@ -196,12 +194,10 @@ const Dashboard = () => {
                 {t("dashboard.cancel")}
               </span>
             </div>
-            <div className="w-full bg-input-bg rounded-full h-5">
               <div
                 className="bg-[#FF4D4F] h-5 rounded-full"
                 style={{ width: "17%" }}
               ></div>
-            </div>
             <span className="text-sm font-medium text-text-primary">
               {dashboardData.orderStatus.cancelled}
             </span>
@@ -326,8 +322,8 @@ const Dashboard = () => {
         </div>
 
         {/* CHANGED: Recharts Line Graph */}
-        <div className="h-60 mt-4">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="h-48 mt-4">
+          <ResponsiveContainer>
             <LineChart data={chartData}>
               {/* dotted horizontal lines */}
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -398,13 +394,13 @@ const Dashboard = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 mb-6">
+      <div className="grid grid-cols-3 gap-3 mb-6">
         {dashboardData.pendingPayoutsList.map((provider, index) => (
           <div
             key={index}
             className="flex items-center gap-2 text-sm text-text-secondary"
           >
-            <FaUser className="text-text-secondary" />
+            <FaUser className="text-text-secondary bg-background-user rounded-full" />
             <span>{provider}</span>
           </div>
         ))}
@@ -432,7 +428,7 @@ const Dashboard = () => {
         </button>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-1">
         <div className="grid grid-cols-[1.5fr_2fr_1fr] items-center py-2 border-b border-border-field">
           <p className="text-sm font-semibold text-text-primary">
             Provider Name
