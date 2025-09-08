@@ -9,14 +9,6 @@ import {
   FaUsersCog,
   FaMoneyBillWave,
   FaUserPlus,
-  FaClipboardList,
-  FaChartLine,
-  FaCheckCircle,
-  FaClock,
-  FaTimesCircle,
-  FaEye,
-  FaThumbsUp,
-  FaThumbsDown,
   FaChevronDown,
   FaArrowUp,
   FaArrowDown,
@@ -35,7 +27,7 @@ import {
 const Dashboard = () => {
   const { t } = useTranslation();
   const mode = useSelector((state) => state.theme.mode);
-  const language = useSelector((state) => state.language.language);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     applyTheme(mode);
@@ -468,10 +460,16 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background-main">
-      <Navbar />
-      <div className="flex">
-        <Sidebar />
-        <main className="flex-1 p-6 lg:p-8">
+      <Navbar 
+        onMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        isMenuOpen={isMobileMenuOpen}
+      />
+      <div className="flex flex-col lg:flex-row">
+        <Sidebar 
+          isOpen={isMobileMenuOpen}
+          onClose={() => setIsMobileMenuOpen(false)}
+        />
+        <main className="flex-1 p-4 lg:p-6 xl:p-8 w-full overflow-x-auto">
           {/* Top Row - Metric Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <MetricCard

@@ -8,12 +8,13 @@ import DataTable from "../components/common/DataTable";
 import { FaSearch, FaChevronDown, FaUpload } from "react-icons/fa";
 import SideModal from "../components/common/SideModal";
 import { useApi } from "../hooks/useApi";
-import { message, Select } from "antd";
+import { message, Select, Tooltip } from "antd";
 
 const SubToSubCategoryManagement = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   //   const [selectedSubSubCategory, setSelectedSubSubCategory] = useState(null);
   const [selectedSubToSubCategory, setSelectedSubToSubCategory] = useState(null);
   const [subSubCategories, setSubSubCategories] = useState([]);
@@ -473,10 +474,16 @@ const SubToSubCategoryManagement = () => {
 
   return (
     <div className="min-h-screen bg-background-main">
-      <Navbar />
-      <div className="flex">
-        <Sidebar />
-        <main className="flex-1 p-8 pt-4 overflow-y-auto">
+      <Navbar 
+        onMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        isMenuOpen={isMobileMenuOpen}
+      />
+      <div className="flex flex-col lg:flex-row">
+        <Sidebar 
+          isOpen={isMobileMenuOpen}
+          onClose={() => setIsMobileMenuOpen(false)}
+        />
+        <main className="flex-1 p-4 lg:p-6 xl:p-8 pt-4 w-full overflow-x-auto">
           {/* Add SubSubCategory Button - positioned to the right */}
           <div className="flex justify-end -mb-10">
             <button
@@ -487,8 +494,8 @@ const SubToSubCategoryManagement = () => {
             </button>
           </div>
           {/* Header and Filters */}
-          <div className="flex justify-start mb-4">
-            <div className="flex items-center bg-background-search rounded-l-full px-4 py-2 w-full max-w-sm sm:max-w-sm md:max-w-sm border border-border-search">
+          <div className="flex flex-col sm:flex-row justify-start mb-4">
+            <div className="flex items-center bg-background-search rounded-l-full px-4 py-2 w-full sm:max-w-sm border border-border-search">
               <FaSearch className="text-[#81879D] mr-2" />
               <input
                 type="text"
@@ -510,7 +517,7 @@ const SubToSubCategoryManagement = () => {
               />
             </div>
             <div
-              className="relative flex items-center bg-background-search rounded-r-full px-4 py-2 w-full md:w-1/6 border-l border-l-searchbar-divider border-r border-r-border-search border-y border-y-border-search cursor-pointer"
+              className="relative flex items-center bg-background-search rounded-r-full px-4 py-2 w-full sm:w-auto sm:min-w-[120px] border-l border-l-searchbar-divider border-r border-r-border-search border-y border-y-border-search cursor-pointer"
               onClick={() => setDropdownOpen(!dropdownOpen)}
             >
               <span className="text-[#A9AEBC] mr-2">
@@ -730,7 +737,11 @@ const SubToSubCategoryManagement = () => {
                 <span className="text-red-500">*</span>
               </label>
               <div className="relative">
-                <Select
+              <Tooltip
+                  title={isEditing ? "To change sub-category, delete this sub-to-sub-category and create new" : ""}
+                  placement="top"
+                >
+                  <Select
                   value={formData.subCategoryName || undefined}
                   onChange={(value) =>
                     setFormData((prev) => ({
@@ -748,13 +759,7 @@ const SubToSubCategoryManagement = () => {
                     </Select.Option>
                   ))}
                 </Select>
-                {isEditing && (
-                  <div className="absolute inset-0 bg-gray-100 bg-opacity-50 cursor-not-allowed rounded-lg flex items-center justify-center">
-                    <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded shadow-lg">
-                      To change sub-category, delete this item and create new
-                    </span>
-                  </div>
-                )}
+                </Tooltip>
               </div>
             </div>
 

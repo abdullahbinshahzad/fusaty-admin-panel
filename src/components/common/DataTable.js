@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { applyTheme } from '../../utils/theme';
-import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
+import { FaStar } from 'react-icons/fa';
 
 // Helper for rendering stars
 const renderStars = (rating) => {
@@ -63,9 +63,10 @@ const DataTable = ({ columns, data }) => {
             {columns.map((col, index) => (
               <th 
                 key={col.key} 
-                className={`px-6 py-3 ${index === columns.length - 1 ? 'text-center' : ''}`}
+                className={`px-3 sm:px-6 py-3 ${index === columns.length - 1 ? 'text-center' : ''}`}
               >
-                {col.title}
+                <span className="hidden sm:inline">{col.title}</span>
+                <span className="sm:hidden text-xs">{col.title.length > 8 ? col.title.substring(0, 8) + '...' : col.title}</span>
               </th>
             ))}
           </tr>
@@ -74,7 +75,7 @@ const DataTable = ({ columns, data }) => {
           {data.map((row, rowIdx) => (
             <tr key={rowIdx} className="border-b border-[#F0F0F0]">
               {columns.map((col) => (
-                <td key={col.key} className="px-6 py-3 whitespace-nowrap align-middle">
+                <td key={col.key} className="px-3 sm:px-6 py-3 whitespace-nowrap align-middle text-sm sm:text-base">
                   {col.render
                     ? col.render(row[col.key], row)
                     : col.key === 'status'

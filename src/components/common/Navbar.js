@@ -3,14 +3,14 @@ import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { applyTheme } from '../../utils/theme';
-import { FaRegBell } from 'react-icons/fa';
+import { FaRegBell, FaBars, FaTimes } from 'react-icons/fa';
 import LanguageToggle from './LanguageToggle';
 import ThemeToggle from './ThemeToggle';
 import PurpleLogoSvg from '../../assets/images/Purple Logo.svg';
 import LoginSvg from '../../assets/images/White Logo.svg';
 // import { useLanguageStyles } from '../../hooks/useLanguageStyles';
 
-const Navbar = () => {
+const Navbar = ({ onMenuToggle, isMenuOpen }) => {
   const { t } = useTranslation();
   const mode = useSelector((state) => state.theme.mode);
   const location = useLocation();
@@ -54,17 +54,27 @@ const Navbar = () => {
   };
 
   return (
-    <header className="w-full flex items-center justify-between px-8 py-2 bg-background-card shadow-sm">
-      {/* Logo and Title */}
-      <div className="flex items-center gap-14">
-        <div className="px-20">
-          {/* Logo changes based on theme mode */}
-          <img src={logoSrc} alt="Logo" className="w-12 h-12" />
+    <header className="w-full flex items-center justify-between px-2 lg:px-8 py-2 bg-background-card shadow-sm">
+      {/* Mobile Menu Button and Logo */}
+      <div className="flex items-center gap-1">
+        {/* Mobile Menu Button */}
+        <button 
+          onClick={onMenuToggle}
+          className="lg:hidden p-2 rounded-md hover:bg-gray-100 transition-colors"
+        >
+          {isMenuOpen ? <FaTimes className="text-xl" /> : <FaBars className="text-xl" />}
+        </button>
+        
+        <div className="flex items-center gap-1 lg:gap-14">
+          <div className="px-4 lg:px-20">
+            {/* Logo changes based on theme mode */}
+            <img src={logoSrc} alt="Logo" className="w-8 h-8 lg:w-12 lg:h-12" />
+          </div>
+          <h1 className="text-lg lg:text-2xl font-bold text-text-activetab truncate">{getDynamicHeading()}</h1>
         </div>
-        <h1 className="text-2xl font-bold text-text-activetab">{getDynamicHeading()}</h1>
       </div>
       {/* Controls */}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-1 lg:gap-5">
         <LanguageToggle />
         <ThemeToggle />
         <div className="w-[1px] h-8 bg-navbar-divider mx-2" />
