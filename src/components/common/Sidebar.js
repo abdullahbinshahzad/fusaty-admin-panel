@@ -2,16 +2,32 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { applyTheme } from '../../utils/theme';
-import { NavLink } from 'react-router-dom';
-import { ReactComponent as DashboardIcon } from '../../assets/images/Dashboard.svg'
+import { NavLink, useLocation } from 'react-router-dom';
+import DashboardIcon from '../../assets/images/Dashboard.svg'
+import DashboardIconLight from '../../assets/images/DashboardLight.svg'
+import DashboardIconDark from '../../assets/images/DashboardDark.svg'
 import UserIcon from '../../assets/images/User.svg'
+import UserIconLight from '../../assets/images/User Purple.svg'
+import UserIconDark from '../../assets/images/User White.svg'
 import ProviderIcon from '../../assets/images/Provider.svg'
+import ProviderIconLight from '../../assets/images/ProviderLight.svg'
+import ProviderIconDark from '../../assets/images/ProviderDark.svg'
 import OrderIcon from '../../assets/images/Order.svg'
+import OrderIconLight from '../../assets/images/OrderLight.svg'
+import OrderIconDark from '../../assets/images/OrderDark.svg'
 import RatingIcon from '../../assets/images/Rating.svg'
+import RatingIconLight from '../../assets/images/RatingLight.svg'
+import RatingIconDark from '../../assets/images/RatingDark.svg'
 import PaymentIcon from '../../assets/images/Payment.svg'
+import PaymentIconLight from '../../assets/images/PaymentLight.svg'
+import PaymentIconDark from '../../assets/images/PaymentDark.svg'
 import ProviderPayoutIcon from '../../assets/images/Payout.svg'
+import ProviderPayoutIconLight from '../../assets/images/PayoutLight.svg'
+import ProviderPayoutIconDark from '../../assets/images/PayoutDark.svg'
 import CategoryIcon from '../../assets/images/Category.svg'
-import { FaUser, FaUsersCog, FaClipboardList, FaThList, FaStar, FaCreditCard, FaMoneyCheckAlt, FaChevronDown, FaChevronRight } from 'react-icons/fa';
+import CategoryIconLight from '../../assets/images/CategoryLight.svg'
+import CategoryIconDark from '../../assets/images/CategoryDark.svg'
+import { FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import { useLanguageStyles } from '../../hooks/useLanguageStyles';
 
 // Sidebar navigation with active purple bar using NavLink from react-router-dom
@@ -21,26 +37,42 @@ const Sidebar = ({ isOpen, onClose }) => {
   const mode = useSelector((state) => state.theme.mode);
   const { textAlign } = useLanguageStyles();
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const location = useLocation();
 
   const navItems = [
-    { label: t('sidebar.dashboard'), icon: <DashboardIcon /> , to: '/dashboard' },
-    { label: t('sidebar.userManagement'), icon: <img src={UserIcon} alt="" />, to: '/user-management' },
-    { label: t('sidebar.providerManagement'), icon: <img src={ProviderIcon} alt="" />, to: '/provider-management' },
-    { label: t('sidebar.orderManagement'), icon: <img src={OrderIcon} alt="" />, to: '/order-management' },
-    { label: t('sidebar.ratingsManagement'), icon: <img src={RatingIcon} alt="" />, to: '/ratings-management' },
-    { label: t('sidebar.paymentManagement'), icon: <img src={PaymentIcon} alt="" />, to: '/payment-management' },
-    { label: t('sidebar.providerPayout'), icon: <img src={ProviderPayoutIcon} alt="" />, to: '/provider-payout' },
+    { label: t('sidebar.dashboard'), icons: { default: DashboardIcon, light: DashboardIconLight, dark: DashboardIconDark }, to: '/dashboard' },
+    { label: t('sidebar.userManagement'), icons: { default: UserIcon, light: UserIconLight, dark: UserIconDark }, to: '/user-management' },
+    { label: t('sidebar.providerManagement'), icons: { default: ProviderIcon, light: ProviderIconLight, dark: ProviderIconDark }, to: '/provider-management' },
+    { label: t('sidebar.orderManagement'), icons: { default: OrderIcon, light: OrderIconLight, dark: OrderIconDark }, to: '/order-management' },
+    { label: t('sidebar.ratingsManagement'), icons: { default: RatingIcon, light: RatingIconLight, dark: RatingIconDark }, to: '/ratings-management' },
+    { label: t('sidebar.paymentManagement'), icons: { default: PaymentIcon, light: PaymentIconLight, dark: PaymentIconDark }, to: '/payment-management' },
+    { label: t('sidebar.providerPayout'), icons: { default: ProviderPayoutIcon, light: ProviderPayoutIconLight, dark: ProviderPayoutIconDark }, to: '/provider-payout' },
   ];
 
   const categoryItems = [
-    { label: t('sidebar.categoryManagement'), icon: <img src={CategoryIcon} alt="" />, to: '/category-management' },
-    { label: t('sidebar.subCategoryManagement'), icon: <img src={CategoryIcon} alt="" />, to: '/sub-category-management' },
-    { label: t('sidebar.subToSubCategoryManagement'), icon: <img src={CategoryIcon} alt="" />, to: '/sub-to-sub-category-management' },
+    { label: t('sidebar.category'), icons: { default: CategoryIcon, light: CategoryIconLight, dark: CategoryIconDark }, to: '/category-management' },
+    { label: t('sidebar.subCategoryManagement'), icons: { default: CategoryIcon, light: CategoryIconLight, dark: CategoryIconDark }, to: '/sub-category-management' },
+    { label: t('sidebar.subToSubCategoryManagement'), icons: { default: CategoryIcon, light: CategoryIconLight, dark: CategoryIconDark }, to: '/sub-to-sub-category-management' },
   ];
+
+  const getIconSrc = (icons, isActive) => {
+    if (!icons) return undefined;
+    if (isActive) {
+      if (mode === 'light' && icons.light) return icons.light;
+      if (mode === 'dark' && icons.dark) return icons.dark;
+    }
+    return icons.default || icons.light || icons.dark;
+  };
 
   useEffect(() => {
     applyTheme(mode);
   }, [mode]);
+
+  useEffect(() => {
+    if (categoryItems.some((item) => item.to === location.pathname)) {
+      setIsCategoryOpen(true);
+    }
+  }, [location.pathname]);
 
   const toggleCategory = () => {
     setIsCategoryOpen(!isCategoryOpen);
@@ -82,7 +114,9 @@ const Sidebar = ({ isOpen, onClose }) => {
                 {isActive && (
                   <span className="absolute left-0 top-0 h-full w-2 bg-text-activetab rounded-r-full" />
                 )}
-                <span className= {`w-6 h-6 text-sm z-10 ${isActive ? 'text-text-activetab fill-text-activetab' : 'text-[#496683]'}`}>{item.icon}</span>
+                <span className="w-6 h-6 text-xl z-10">
+                  <img src={getIconSrc(item.icons, isActive)} alt="" />
+                </span>
                 <span className={`text-base z-10 ${textAlign}`}>{item.label}</span>
               </>
             )}
@@ -93,11 +127,11 @@ const Sidebar = ({ isOpen, onClose }) => {
         <div className="flex flex-col">
           <button
             onClick={toggleCategory}
-            className={`relative flex items-center justify-between gap-4 px-6 py-3 cursor-pointer transition-colors duration-2000 text-[#496683] hover:bg-[#F5F1FF] hover:text-[#8B3DFF] w-full`}
+            className={`relative flex items-center justify-between gap-1 px-6 py-3 cursor-pointer transition-colors duration-2000 text-[#496683] hover:bg-[#F5F1FF] hover:text-[#8B3DFF] w-full`}
           >
             <div className="flex items-center gap-4">
-              <span className="w-6 h-6 text-xl z-10"><img src={CategoryIcon} alt="" /></span>
-              <span className={`text-base z-10 ${textAlign}`}>{t('sidebar.category')}</span>
+              <span className="w-6 h-6 text-xl z-10"><img src={getIconSrc({ default: CategoryIcon }, false)} alt="" /></span>
+              <span className={`text-base z-10 ${textAlign}`}>{t('sidebar.categoryManagement')}</span>
             </div>
             <span className="text-sm z-10">
               {isCategoryOpen ? <FaChevronDown /> : <FaChevronRight />}
@@ -122,7 +156,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                       {isActive && (
                         <span className="absolute left-0 top-0 h-full w-2 bg-text-activetab rounded-r-full" />
                       )}
-                      <span className="w-6 h-6 text-lg z-10">{item.icon}</span>
+                      <span className="w-6 h-6 text-lg z-10"><img src={getIconSrc(item.icons, isActive)} alt="" /></span>
                       <span className={`text-sm z-10 ${textAlign}`}>{item.label}</span>
                     </>
                   )}
@@ -148,7 +182,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                 {isActive && (
                   <span className="absolute left-0 top-0 h-full w-2 bg-text-activetab rounded-r-full" />
                 )}
-                <span className="w-6 h-6 text-xl z-10">{item.icon}</span>
+                <span className="w-6 h-6 text-xl z-10"><img src={getIconSrc(item.icons, isActive)} alt="" /></span>
                 <span className={`text-base z-10 ${textAlign}`}>{item.label}</span>
               </>
             )}
