@@ -13,6 +13,7 @@ module.exports = {
           search: 'var(--background-search)',
           activetab: 'var(--background-activetab)',
           sidebaractivetab: 'var(--background-sidebaractivetab)',
+          sidebarhover: 'var(--background-sidebarhover)',
           thead: 'var(--background-thead)',
           tbody: 'var(--background-tbody)',
           sidemodal: 'var(--background-sidemodal)',
@@ -25,7 +26,8 @@ module.exports = {
           activetab: 'var(--text-activetab)',
           tablehead: 'var(--text-tablehead)',
           tablebody: 'var(--text-tablebody)',
-          tableactionbtn: 'var(--text-tableactionbtn)'
+          tableactionbtn: 'var(--text-tableactionbtn)',
+          sidebarhover: 'var(--text-sidebarhover)',
         },
         accent: 'var(--accent)',
         input: {
