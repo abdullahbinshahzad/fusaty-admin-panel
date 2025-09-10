@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { applyTheme } from '../../utils/theme';
@@ -39,7 +39,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const location = useLocation();
 
-  const navItems = [
+  const navItems = useMemo(() => ([
     { label: t('sidebar.dashboard'), icons: { default: DashboardIcon, light: DashboardIconLight, dark: DashboardIconDark }, to: '/dashboard' },
     { label: t('sidebar.userManagement'), icons: { default: UserIcon, light: UserIconLight, dark: UserIconDark }, to: '/user-management' },
     { label: t('sidebar.providerManagement'), icons: { default: ProviderIcon, light: ProviderIconLight, dark: ProviderIconDark }, to: '/provider-management' },
@@ -47,13 +47,13 @@ const Sidebar = ({ isOpen, onClose }) => {
     { label: t('sidebar.ratingsManagement'), icons: { default: RatingIcon, light: RatingIconLight, dark: RatingIconDark }, to: '/ratings-management' },
     { label: t('sidebar.paymentManagement'), icons: { default: PaymentIcon, light: PaymentIconLight, dark: PaymentIconDark }, to: '/payment-management' },
     { label: t('sidebar.providerPayout'), icons: { default: ProviderPayoutIcon, light: ProviderPayoutIconLight, dark: ProviderPayoutIconDark }, to: '/provider-payout' },
-  ];
+  ]), [t]);
 
-  const categoryItems = [
+  const categoryItems = useMemo(() => ([
     { label: t('sidebar.category'), icons: { default: CategoryIcon, light: CategoryIconLight, dark: CategoryIconDark }, to: '/category-management' },
     { label: t('sidebar.subCategoryManagement'), icons: { default: CategoryIcon, light: CategoryIconLight, dark: CategoryIconDark }, to: '/sub-category-management' },
     { label: t('sidebar.subToSubCategoryManagement'), icons: { default: CategoryIcon, light: CategoryIconLight, dark: CategoryIconDark }, to: '/sub-to-sub-category-management' },
-  ];
+  ]), [t]);
 
   const getIconSrc = (icons, isActive) => {
     if (!icons) return undefined;
@@ -72,7 +72,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     if (categoryItems.some((item) => item.to === location.pathname)) {
       setIsCategoryOpen(true);
     }
-  }, [location.pathname]);
+  }, [location.pathname, categoryItems]);
 
   const toggleCategory = () => {
     setIsCategoryOpen(!isCategoryOpen);
@@ -103,7 +103,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             key={item.label}
             to={item.to}
             className={({ isActive }) =>
-              `relative flex items-center gap-4 px-6 py-3 cursor-pointer transition-colors duration-2000 text-[#496683] hover:bg-[#F5F1FF] hover:text-[#8B3DFF] ${
+              `relative flex items-center gap-4 px-6 py-3 cursor-pointer transition-colors duration-2000 text-[#496683] hover:bg-background-sidebarhover hover:text-text-sidebarhover ${
                 isActive ? 'bg-background-sidebaractivetab text-text-activetab font-semibold' : ''
               }`
             }
@@ -127,7 +127,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         <div className="flex flex-col">
           <button
             onClick={toggleCategory}
-            className={`relative flex items-center justify-between gap-1 px-6 py-3 cursor-pointer transition-colors duration-2000 text-[#496683] hover:bg-[#F5F1FF] hover:text-[#8B3DFF] w-full`}
+            className={`relative flex items-center justify-between gap-1 px-6 py-3 cursor-pointer transition-colors duration-2000 text-[#496683] hover:bg-background-sidebarhover hover:text-text-sidebarhover w-full`}
           >
             <div className="flex items-center gap-4">
               <span className="w-6 h-6 text-xl z-10"><img src={getIconSrc({ default: CategoryIcon }, false)} alt="" /></span>
@@ -145,7 +145,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                   key={item.label}
                   to={item.to}
                   className={({ isActive }) =>
-                    `relative flex items-center gap-4 px-6 py-2 cursor-pointer transition-colors duration-2000 text-[#496683] hover:bg-[#F5F1FF] hover:text-[#8B3DFF] ${
+                    `relative flex items-center gap-4 px-6 py-2 cursor-pointer transition-colors duration-2000 text-[#496683] hover:bg-background-sidebarhover hover:text-text-sidebarhover ${
                       isActive ? 'bg-background-sidebaractivetab text-text-activetab font-semibold' : ''
                     }`
                   }
@@ -156,7 +156,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                       {isActive && (
                         <span className="absolute left-0 top-0 h-full w-2 bg-text-activetab rounded-r-full" />
                       )}
-                      <span className="w-6 h-6 text-lg z-10"><img src={getIconSrc(item.icons, isActive)} alt="" /></span>
+                      {/* <span className="w-6 h-6 text-lg z-10"><img src={getIconSrc(item.icons, isActive)} alt="" /></span> */}
                       <span className={`text-sm z-10 ${textAlign}`}>{item.label}</span>
                     </>
                   )}
@@ -171,7 +171,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             key={item.label}
             to={item.to}
             className={({ isActive }) =>
-              `relative flex items-center gap-4 px-6 py-3 cursor-pointer transition-colors duration-2000 text-[#496683] hover:bg-[#F5F1FF] hover:text-[#8B3DFF] ${
+              `relative flex items-center gap-4 px-6 py-3 cursor-pointer transition-colors duration-2000 text-[#496683] hover:bg-background-sidebarhover hover:text-text-sidebarhover ${
                 isActive ? 'bg-background-sidebaractivetab text-text-activetab font-semibold' : ''
               }`
             }
