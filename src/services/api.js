@@ -1,8 +1,7 @@
 import { getAccessToken } from '../utils/auth';
 import { API_ENDPOINTS } from '../utils/constants';
 
-const API_BASE_URL = 'http://15.185.106.143/api';
-
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 export const apiService = {
   makeRequest: async (endpoint, options = {}) => {
     const url = `${API_BASE_URL}${endpoint}`;
